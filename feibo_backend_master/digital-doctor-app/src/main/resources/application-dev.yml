@@ -1,0 +1,278 @@
+server:
+  address: 0.0.0.0
+  port: 8091
+  forward-headers-strategy: native
+app:
+  security:
+    cors:
+      allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+      allow-credentials: ${APP_CORS_ALLOW_CREDENTIALS:true}
+    auth-protection:
+      sms-phone-per-hour: ${AUTH_SMS_PHONE_PER_HOUR:5}
+      sms-address-per-hour: ${AUTH_SMS_ADDRESS_PER_HOUR:30}
+      sms-cooldown: ${AUTH_SMS_COOLDOWN:60s}
+      login-phone-per-window: ${AUTH_LOGIN_PHONE_PER_WINDOW:5}
+      login-address-per-window: ${AUTH_LOGIN_ADDRESS_PER_WINDOW:60}
+      login-window: ${AUTH_LOGIN_WINDOW:15m}
+      verification-attempts: ${AUTH_VERIFICATION_ATTEMPTS:5}
+      verification-window: ${AUTH_VERIFICATION_WINDOW:5m}
+springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_ENABLED:true}
+  swagger-ui:
+    enabled: ${SPRINGDOC_ENABLED:true}
+rocketmq:
+  # 服务地址，多个用逗号分开
+  name-server: 101.37.33.82:9876
+  consumer:
+    group: springboot_consumer_group
+    # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
+    pull-batch-size: 10
+  producer:
+    # 发送同一类消息的设置为同一个group，保证唯一
+    group: springboot_producer_group
+    # 发送消息超时时间，默认3000
+    sendMessageTimeout: 10000
+    # 发送消息失败重试次数，默认2
+    retryTimesWhenSendFailed: 2
+    # 异步消息重试此处，默认2
+    retryTimesWhenSendAsyncFailed: 2
+    # 消息最大长度，默认1024 * 1024 * 4(默认4M)
+    maxMessageSize: 4096
+    # 压缩消息阈值，默认4k(1024 * 4)
+    compressMessageBodyThreshold: 4096
+    # 是否在内部发送失败时重试另一个broker，默认false
+    retryNextServer: false
+ai:
+  # Base64-encoded 32-byte AES key. Required before storing API Key overrides.
+  model-key-encryption-secret: ${AI_MODEL_KEY_ENCRYPTION_SECRET:}
+  models:
+    deepseek:
+      base-url: https://api.deepseek.com
+      api-key: ${DEEPSEEK_API_KEY:}
+    wisediag:
+      base-url: https://api.wisediag.com
+      api-key: ${WISEDIAG_API_KEY:}
+    doubao:
+      base-url: https://ark.cn-beijing.volces.com
+      api-key: ${DOUBAO_API_KEY:}
+    qwen:
+      base-url: https://dashscope.aliyuncs.com/
+      api-key: ${QWEN_API_KEY:}
+    baichuan:
+      base-url: https://api.baichuan-ai.com  # 百川官方 OpenAI 兼容接口地址
+      api-key: ${BAICHUAN_API_KEY:}
+    ant:
+      base-url: https://api.tbox.cn/api/llm
+      api-key: ${ANT_AI_API_KEY:}
+    glm52:
+      enabled: ${GLM52_ENABLED:false}
+      base-url: https://open.bigmodel.cn/api/paas/v4
+      api-key: ${GLM52_API_KEY:}
+    kimik3:
+      enabled: ${KIMI_K3_ENABLED:false}
+      base-url: https://api.moonshot.cn/v1
+      api-key: ${KIMI_K3_API_KEY:}
+    qianfan:
+      enabled: ${QIANFAN_ENABLED:false}
+      base-url: https://qianfan.baidubce.com/v2
+      api-key: ${QIANFAN_API_KEY:}
+    szdoctor:
+      enabled: ${SZDOCTOR_ENABLED:false}
+      base-url: https://model.hzmwmt.com/open
+      api-key: ${SZDOCTOR_API_KEY:}
+
+digital-human:
+  api:
+    app-key: ${DIGITAL_HUMAN_APP_KEY:}
+    app-secret: ${DIGITAL_HUMAN_APP_SECRET:}
+    callback-url: ${DIGITAL_HUMAN_CALLBACK_URL:}
+    callback-credential-ttl: ${DIGITAL_HUMAN_CALLBACK_CREDENTIAL_TTL:24h}
+    result-allowed-hosts: ${DIGITAL_HUMAN_RESULT_ALLOWED_HOSTS:}
+    max-result-bytes: ${DIGITAL_HUMAN_MAX_RESULT_BYTES:536870912}
+    callback-duration-unit: ${DIGITAL_HUMAN_CALLBACK_DURATION_UNIT:milliseconds}
+
+webclient:
+  config:
+    hosts:
+      tencent-agent-prod: https://wss.lke.cloud.tencent.com
+      all-in-pay-prod: https://vsp.allinpay.com/apiweb/
+      digital-human-prod: https://openman.weta365.com/
+      vedio-prod: http://127.0.0.1:5409 #这里换成视频发布的地址即可
+    connect-timeout: 30000
+    response-timeout-minutes: 10
+    read-timeout-minutes: 10
+    write-timeout-seconds: 30
+    max-in-memory-size: 10
+
+tencent:
+  agent:
+    bot-app-key: ${TENCENT_AGENT_BOT_APP_KEY:}
+jwt:
+  secrets:
+    ACCESS_PRIVATE: ${JWT_ACCESS_PRIVATE_KEY:}
+    ACCESS_PUBLIC: ${JWT_ACCESS_PUBLIC_KEY:}
+    REFRESH_PRIVATE: ${JWT_REFRESH_PRIVATE_KEY:}
+    REFRESH_PUBLIC: ${JWT_REFRESH_PUBLIC_KEY:}
+  tokenHead: "Bearer"
+  accessTokenDuration: ${JWT_ACCESS_TOKEN_DURATION:15m}
+  refreshTokenDuration: ${JWT_REFRESH_TOKEN_DURATION:7d}
+  clientBind: "clientBind"
+payment:
+  all-in-pay:
+    # --- 身份与基础配置 ---
+    cus-id: ${ALLINPAY_CUS_ID:}
+    app-id: ${ALLINPAY_APP_ID:}
+    cus-ip: ${ALLINPAY_CUS_IP:}
+    version: "15"              # 接口版本号
+    sign-type: "RSA"            # 签名方式
+    # --- URL配置 ---
+    notify-url: ${ALLINPAY_NOTIFY_URL:}
+    # 默认的订单有效时间（分钟），如果前端不传则使用此值
+    default-valid-time: 15
+    rsa-private-key-pkcs8: ${ALLINPAY_RSA_PRIVATE_KEY_PKCS8:}
+    valid-rsa-public-key: ${ALLINPAY_RSA_PUBLIC_KEY:}
+gateway:
+  config:
+    enable: true
+    hosts:
+      all-in-pay-test: https://syb-test.allinpay.com/apiweb/
+      all-in-pay-prod: https://vsp.allinpay.com/apiweb/
+      tencent-agent-prod: https://wss.lke.cloud.tencent.com
+      wise-diag-chat-proad: https://api.wisediag.com/v1/
+    wise-diag-api-key: ${WISE_DIAG_API_KEY:}
+# MinIO配置
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  bucket-name: digital-doctor-oss  # MinIO存储桶名称
+  base-url: http://101.37.255.45:9000/digital-doctor-oss/  # MinIO访问基础URL
+# 阿里云OSS配置
+aliyun:
+  oss:
+    # 以华东1（杭州）地域的外网访问域名为例
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    # 以华东1（杭州）地域为例
+    region: cn-hangzhou
+    # 你的Bucket名称
+    bucketName: digital-doctor-oss
+    baseUrl: https://digital-doctor-oss.oss-cn-hangzhou.aliyuncs.com/
+    accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID:}
+    accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:}
+    maxConnections: 1024
+    socketTimeout: 50000
+    connectionTimeout: 50000
+    maxErrorRetry: 3
+  sms:
+    access-key-id: ${ALIYUN_SMS_ACCESS_KEY_ID:}
+    access-key-secret: ${ALIYUN_SMS_ACCESS_KEY_SECRET:}
+    # 服务接入地址，通常无需修改
+    endpoint: dysmsapi.aliyuncs.com
+  dashscope:
+    apiKey: ${DASHSCOPE_API_KEY:}
+# 线程池配置
+thread:
+  pool:
+    executor:
+      config:
+        core-pool-size: 20
+        max-pool-size: 50
+        keep-alive-time: 5000
+        block-queue-size: 5000
+        # 当线程池中的任务队列已满，并且没有空闲线程可以执行新任务时，CallerRunsPolicy 会将任务回退到调用者线程中运行。这种策略适用于不希望丢失任务且可以接受调用者线程被阻塞的场景。
+        policy: CallerRunsPolicy
+
+# FFmpeg配置
+video:
+  ffmpeg:
+    path: ${FFMPEG_PATH:ffmpeg}
+
+# 数据库配置；启动时配置数据库资源信息
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 300MB
+  ai:
+    retry:
+      # 最大重试次数（10次）
+      max-attempts: 10
+      backoff:
+        # 初始重试间隔时间（默认2秒）
+        initial-interval: 2s
+        # 重试间隔倍数（默认5倍）
+        multiplier: 5
+        # 最大重试间隔时间（默认3分钟）
+        max-interval: 3m
+      # 是否在客户端错误时重试（默认为false）
+      on-client-errors: false
+      # 不触发重试的HTTP状态码（默认空）
+      exclude-on-http-codes:
+      # 触发重试的HTTP状态码（默认空）
+      on-http-codes:
+    deepseek:
+      api-key: ${DEEPSEEK_API_KEY:}
+      base-url: https://api.wisediag.com/v1
+      chat:
+        enabled: true
+        options:
+          temperature: 0.7      # 创造性平衡点（0.3-0.8）
+          topP: 0.9             # 与temperature二选一
+          maxTokens: 1024        # 控制响应长度
+          frequencyPenalty: 0.5  # 减少重复内容（0-1）
+          presencePenalty: 0.3   # 鼓励新话题（0-1）
+          model: deepseek-v4-flash
+
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: Retail_HikariCP
+      minimum-idle: 15 #最小空闲连接数量
+      idle-timeout: 180000 #空闲连接存活最大时间，默认600000（10分钟）
+      maximum-pool-size: 25 #连接池最大连接数，默认是10
+      auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+      max-lifetime: 1800000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+      connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000
+      connection-test-query: SELECT 1
+    type: com.zaxxer.hikari.HikariDataSource
+# Redis
+redis:
+  sdk:
+    config:
+      host: ${REDIS_HOST}
+      port: 6379
+      pool-size: 10
+      min-idle-size: 5
+      idle-timeout: 30000
+      connect-timeout: 5000
+      retry-attempts: 3
+      retry-interval: 1000
+      ping-interval: 60000
+      keep-alive: true
+      username: ${REDIS_USERNAME:}
+      password: ${REDIS_PASSWORD:}
+# MyBatis 配置【如需使用记得打开】
+#mybatis:
+#  mapper-locations: classpath:/mybatis/mapper/*.xml
+#  config-location:  classpath:/mybatis/config/mybatis-config.xml
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  executor-type: SIMPLE
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
+  com.hzmwmt.infrastructure.dao: DEBUG
+doubao:
+  ark:
+    api-key: ${DOUBAO_ARK_API_KEY:}
+    keep-alive-duration-seconds: 60
+    max-idle-connections: 5

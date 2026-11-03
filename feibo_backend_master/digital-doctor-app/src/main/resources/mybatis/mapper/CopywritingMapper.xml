@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.CopywritingMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.Copywriting">
+        <id property="copywritingId" column="copywriting_id"/>
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="copywritingCategoryId" column="copywriting_category_id"/>
+        <result property="copywritingSourceId" column="copywriting_source_id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="activeGlobalCopywritingAdminCondition">
+        exists (
+            select 1
+            from t_user scope_admin
+            inner join t_user_role_map scope_admin_role_map
+                on scope_admin_role_map.user_id = scope_admin.user_id
+            inner join t_role scope_admin_role
+                on scope_admin_role.role_id = scope_admin_role_map.role_id
+            where scope_admin.user_id = #{actorUserId}
+              and coalesce(scope_admin.status, 0) = 0
+              and upper(scope_admin_role.name) in ('ADMIN', 'SUPER_ADMIN', 'SUPERADMIN')
+        )
+    </sql>
+
+    <sql id="visibleCopywritingForScopeCondition">
+        and (
+            <choose>
+                <when test="allAccess">
+                    <include refid="activeGlobalCopywritingAdminCondition"/>
+                </when>
+                <otherwise>
+                    copywriting.user_id = #{actorUserId}
+                    <if test="reviewExpert">
+                        or exists (
+                            select 1
+                            from t_copywriting_expert_assignment scope_expert_assignment
+                            inner join t_user scope_expert
+                                on scope_expert.user_id = scope_expert_assignment.expert_user_id
+                               and coalesce(scope_expert.status, 0) = 0
+                            where scope_expert_assignment.account_user_id = copywriting.user_id
+                              and scope_expert_assignment.expert_user_id = #{actorUserId}
+                              and exists (
+                                  select 1
+                                  from t_user_role_map scope_expert_role_map
+                                  inner join t_role scope_expert_role
+                                      on scope_expert_role.role_id = scope_expert_role_map.role_id
+                                  where scope_expert_role_map.user_id = #{actorUserId}
+                                    and upper(scope_expert_role.name) = 'EXPERT'
+                              )
+                        )
+                    </if>
+                    <if test="reviewOrganization">
+                        or exists (
+                            select 1
+                            from t_copywriting_organization_admin_assignment scope_org_assignment
+                            inner join t_user scope_org_admin
+                                on scope_org_admin.user_id = scope_org_assignment.admin_user_id
+                               and coalesce(scope_org_admin.status, 0) = 0
+                            where scope_org_assignment.account_user_id = copywriting.user_id
+                              and scope_org_assignment.admin_user_id = #{actorUserId}
+                              and exists (
+                                  select 1
+                                  from t_user_role_map scope_org_role_map
+                                  inner join t_role scope_org_role
+                                      on scope_org_role.role_id = scope_org_role_map.role_id
+                                  where scope_org_role_map.user_id = #{actorUserId}
+                                    and upper(scope_org_role.name) = 'ORG_ADMIN'
+                              )
+                        )
+                    </if>
+                </otherwise>
+            </choose>
+        )
+    </sql>
+    <update id="updateStatus2Complete">
+        update t_copywriting
+        set status = 2
+        where copywriting_id = #{copywritingId}
+          and status = 1
+    </update>
+    <update id="updateStatus2Failure">
+        update t_copywriting
+        set status = 3
+        where copywriting_id = #{copywritingId}
+          and status = 1
+    </update>
+
+    <select id="selectCopyWritingListByCopywritingIds" resultMap="BaseResultMap">
+        select copywriting_id,user_id,copywriting_category_id,copywriting_source_id,title,summary,content,status,create_time
+        from t_copywriting where copywriting_id in
+        <foreach item="item" index="index" collection="copywritingIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectVisibleCopywritingListByIds" resultMap="BaseResultMap">
+        select copywriting.copywriting_id,
+               copywriting.user_id,
+               copywriting.copywriting_category_id,
+               copywriting.copywriting_source_id,
+               copywriting.title,
+               copywriting.summary,
+               copywriting.content,
+               copywriting.status,
+               copywriting.create_time
+        from t_copywriting copywriting
+        where copywriting.copywriting_id in
+        <foreach item="item" collection="copywritingIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <include refid="visibleCopywritingForScopeCondition"/>
+    </select>
+    <select id="selectCopywritingIdsPageByScope" resultType="java.lang.Long">
+        select copywriting.copywriting_id
+        from t_copywriting copywriting
+        where 1 = 1
+        <if test="status != null">
+            and copywriting.status = #{status}
+        </if>
+        <choose>
+            <when test="allAccess">
+                and <include refid="activeGlobalCopywritingAdminCondition"/>
+            </when>
+            <otherwise>
+                and copywriting.user_id = #{actorUserId}
+            </otherwise>
+        </choose>
+        order by copywriting.id desc
+        limit #{offset}, #{size}
+    </select>
+    <select id="countCopywritingsByScope" resultType="long">
+        select count(1)
+        from t_copywriting copywriting
+        where 1 = 1
+        <if test="status != null">
+            and copywriting.status = #{status}
+        </if>
+        <choose>
+            <when test="allAccess">
+                and <include refid="activeGlobalCopywritingAdminCondition"/>
+            </when>
+            <otherwise>
+                and copywriting.user_id = #{actorUserId}
+            </otherwise>
+        </choose>
+    </select>
+    <select id="selectCopywritingIdsPageByUserIdAndStatus" resultType="java.lang.Long">
+        select copywriting_id from t_copywriting where user_id = #{userId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        order by id desc
+        limit #{offset}, #{size}
+    </select>
+    <select id="selectPublishedCopywritingIdsByUserId" resultType="java.lang.Long">
+        select copywriting_id
+        from t_copywriting
+        where user_id = #{userId}
+          and status = 1
+    </select>
+
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.PaymentTransactionMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.PaymentTransaction">
+        <id property="id" column="id"/>
+        <result property="paymentTransactionId" column="payment_transaction_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="transactionType" column="transaction_type"/>
+        <result property="transactionStatus" column="transaction_status"/>
+        <result property="amount" column="amount"/>
+        <result property="paymentMethod" column="payment_method"/>
+        <result property="externalTransactionId" column="external_transaction_id"/>
+        <result property="channelResponseCode" column="channel_response_code"/>
+        <result property="channelResponseMsg" column="channel_response_msg"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+</mapper>

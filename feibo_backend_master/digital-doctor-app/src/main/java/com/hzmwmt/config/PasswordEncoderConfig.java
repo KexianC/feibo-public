@@ -1,0 +1,23 @@
+package com.hzmwmt.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+/**
+ * @author huihui
+ * @version v1.0
+ * @Description: TODO
+ * @ClassName PasswordEncoderConfig
+ * @Date: 2025/9/5 18:02
+ */
+@Configuration
+public class PasswordEncoderConfig {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+}

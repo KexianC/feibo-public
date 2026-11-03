@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.DigitalVoiceMapper">
+
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.DigitalVoice">
+        <id property="id" column="id"/>
+        <result property="digitalVoiceId" column="digital_voice_id"/>
+        <result property="name" column="name"/>
+        <result property="styleName" column="style_name"/>
+        <result property="gender" column="gender"/>
+        <result property="isDisplay" column="is_display"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="selectVoiceListCursorPage" resultMap="BaseResultMap">
+        select voice_id,name,style_name,image,gender, update_time from t_digital_voice
+        <where>
+            <if test="lastCursorId!= null">
+                voice_id&lt; #{lastCursorId}
+            </if>
+        </where>
+        ORDER BY voice_id DESC
+        limit #{size}
+    </select>
+
+    <select id="selectVoiceListByVoiceIds" resultMap="BaseResultMap">
+        select voice_id,style_name,image,gender from t_digital_voice where voice_id
+        in
+        <foreach item="id" collection="voiceIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="selectVoiceListByCompoundQuery" resultMap="BaseResultMap">
+        SELECT
+        voice_id, name, style_name, image,gender
+        FROM
+        t_digital_voice
+        <where>
+            voice_id IN
+            <foreach item="voiceId" collection="list" open="(" separator="," close=")">
+                #{voiceId}
+            </foreach>
+            <if test="lastCursorId != null">
+                AND voice_id&lt; #{lastCursorId}
+            </if>
+
+            <if test="gender != null ''">
+                AND gender = #{gender}
+            </if>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+        </where>
+        ORDER BY voice_id DESC
+        LIMIT #{size}
+    </select>
+
+
+</mapper>

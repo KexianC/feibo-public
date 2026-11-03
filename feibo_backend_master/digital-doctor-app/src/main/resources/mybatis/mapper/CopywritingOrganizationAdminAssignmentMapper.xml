@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.CopywritingOrganizationAdminAssignmentMapper">
+    <select id="selectActiveAdminUserIdForUpdate" resultType="java.lang.Long">
+        select user_id
+        from t_user
+        where user_id = #{adminUserId}
+          and coalesce(status, 0) = 0
+        for update
+    </select>
+
+    <select id="selectOrganizationAdminRoleMapIdForUpdate" resultType="java.lang.Long">
+        select urm.id
+        from t_user_role_map urm
+        inner join t_role r on r.role_id = urm.role_id
+        where urm.user_id = #{adminUserId}
+          and upper(r.name) = 'ORG_ADMIN'
+        order by urm.id
+        limit 1
+        for update
+    </select>
+
+    <select id="selectAssignmentIdForUpdate" resultType="java.lang.Long">
+        select assignment.id
+        from t_copywriting_organization_admin_assignment assignment
+        inner join t_copywriting copywriting
+            on copywriting.user_id = assignment.account_user_id
+        where copywriting.copywriting_id = #{copywritingId}
+          and assignment.admin_user_id = #{adminUserId}
+        limit 1
+        for update
+    </select>
+</mapper>

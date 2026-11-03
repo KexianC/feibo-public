@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.AIConversationMapper">
+
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.AIConversation">
+        <id property="id" column="id"/>
+        <result property="aiConversationId" column="ai_conversation_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <!-- 新增：更新 title + consumption + billing -->
+    <update id="updateConversationByAiConversationIdAndUserId">
+        UPDATE t_ai_conversation
+        SET title       = #{title},
+            consumption = #{consumption}, -- 总Token（历史+新Token）
+            billing     = #{billing}      -- 总费用（历史+新费用）
+        WHERE ai_conversation_id = #{aiConversationId}
+          AND user_id = #{userId}
+    </update>
+
+
+    <select id="selectAiConversationListCursorPageByUserIdAndModel"
+            resultType="com.hzmwmt.infrastructure.dao.po.AIConversation">
+        SELECT ai_conversation_id, title, create_time
+        FROM t_ai_conversation
+        WHERE user_id = #{userId}
+        <if test="lastCursorId!= null">
+            AND ai_conversation_id &lt; #{lastCursorId}
+        </if>
+        ORDER BY ai_conversation_id DESC
+        limit #{size}
+    </select>
+    <select id="validateAiConversationIdAndUserId" resultType="java.lang.Boolean">
+        SELECT EXISTS(SELECT 1
+                      FROM t_ai_conversation
+                      WHERE ai_conversation_id = #{aiConversationId}
+                        AND user_id = #{userId})
+    </select>
+
+    <select id="selectConsumptionByAiConversationIdAndUserId"
+            resultType="java.lang.Long">
+
+        SELECT consumption
+        FROM t_ai_conversation
+        WHERE ai_conversation_id = #{aiConversationId}
+          AND user_id = #{userId}
+    </select>
+
+    <select id="selectBillingByAiConversationIdAndUserId"
+            resultType="java.math.BigDecimal">
+
+        SELECT billing
+        FROM t_ai_conversation
+        WHERE ai_conversation_id = #{aiConversationId}
+          AND user_id = #{userId}
+    </select>
+
+
+</mapper>

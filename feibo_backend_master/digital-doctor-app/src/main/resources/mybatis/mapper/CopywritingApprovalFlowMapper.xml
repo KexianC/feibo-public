@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.CopywritingApprovalFlowMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.CopywritingApprovalFlow">
+        <id property="id" column="id"/>
+        <result property="copywritingApprovalFlowId" column="copywriting_approval_flow_id"/>
+        <result property="copywritingId" column="copywriting_id"/>
+        <result property="currentStatus" column="current_status"/>
+        <result property="currentProcessorId" column="current_processor_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="assignedExpertCondition">
+        and copywriting_id in (
+            select copywriting.copywriting_id
+            from t_copywriting copywriting
+            inner join t_copywriting_expert_assignment expert_assignment
+                on expert_assignment.account_user_id = copywriting.user_id
+            inner join t_user expert_user
+                on expert_user.user_id = expert_assignment.expert_user_id
+            where expert_assignment.expert_user_id = #{currentProcessorId}
+              and coalesce(expert_user.status, 0) = 0
+              and exists (
+                  select 1
+                  from t_user_role_map expert_role_map
+                  inner join t_role expert_role on expert_role.role_id = expert_role_map.role_id
+                  where expert_role_map.user_id = expert_assignment.expert_user_id
+                    and upper(expert_role.name) = 'EXPERT'
+              )
+        )
+    </sql>
+
+    <sql id="assignedOrganizationAdminCondition">
+        and copywriting_id in (
+            select copywriting.copywriting_id
+            from t_copywriting copywriting
+            inner join t_copywriting_organization_admin_assignment admin_assignment
+                on admin_assignment.account_user_id = copywriting.user_id
+            inner join t_user admin_user
+                on admin_user.user_id = admin_assignment.admin_user_id
+            where admin_assignment.admin_user_id = #{currentProcessorId}
+              and coalesce(admin_user.status, 0) = 0
+              and exists (
+                  select 1
+                  from t_user_role_map admin_role_map
+                  inner join t_role admin_role on admin_role.role_id = admin_role_map.role_id
+                  where admin_role_map.user_id = admin_assignment.admin_user_id
+                    and upper(admin_role.name) = 'ORG_ADMIN'
+              )
+        )
+    </sql>
+
+    <sql id="activeGlobalApprovalAdminCondition">
+        exists (
+            select 1
+            from t_user scope_admin
+            inner join t_user_role_map scope_admin_role_map
+                on scope_admin_role_map.user_id = scope_admin.user_id
+            inner join t_role scope_admin_role
+                on scope_admin_role.role_id = scope_admin_role_map.role_id
+            where scope_admin.user_id = #{actorUserId}
+              and coalesce(scope_admin.status, 0) = 0
+              and upper(scope_admin_role.name) in ('ADMIN', 'SUPER_ADMIN', 'SUPERADMIN')
+        )
+    </sql>
+
+    <sql id="globalWorkflowAdminCondition">
+        and exists (
+            select 1
+            from t_user workflow_admin
+            inner join t_user_role_map workflow_admin_role_map
+                on workflow_admin_role_map.user_id = workflow_admin.user_id
+            inner join t_role workflow_admin_role
+                on workflow_admin_role.role_id = workflow_admin_role_map.role_id
+            where workflow_admin.user_id = #{scopeActorId}
+              and coalesce(workflow_admin.status, 0) = 0
+              and upper(workflow_admin_role.name) in ('ADMIN', 'SUPER_ADMIN', 'SUPERADMIN')
+        )
+    </sql>
+
+    <sql id="visibleApprovalFlowForScopeCondition">
+        <choose>
+            <when test="allAccess">
+                and <include refid="activeGlobalApprovalAdminCondition"/>
+            </when>
+            <when test="reviewExpert and approvalStatus == 1">
+                and (approval_flow.current_processor_id is null
+                     or approval_flow.current_processor_id = #{actorUserId})
+                and exists (
+                    select 1
+                    from t_copywriting copywriting
+                    inner join t_copywriting_expert_assignment assignment
+                        on assignment.account_user_id = copywriting.user_id
+                    inner join t_user reviewer
+                        on reviewer.user_id = assignment.expert_user_id
+                       and coalesce(reviewer.status, 0) = 0
+                    where copywriting.copywriting_id = approval_flow.copywriting_id
+                      and assignment.expert_user_id = #{actorUserId}
+                      and exists (
+                          select 1
+                          from t_user_role_map role_map
+                          inner join t_role role on role.role_id = role_map.role_id
+                          where role_map.user_id = #{actorUserId}
+                            and upper(role.name) = 'EXPERT'
+                      )
+                )
+            </when>
+            <when test="reviewOrganization and approvalStatus == 3">
+                and (approval_flow.current_processor_id is null
+                     or approval_flow.current_processor_id = #{actorUserId})
+                and exists (
+                    select 1
+                    from t_copywriting copywriting
+                    inner join t_copywriting_organization_admin_assignment assignment
+                        on assignment.account_user_id = copywriting.user_id
+                    inner join t_user reviewer
+                        on reviewer.user_id = assignment.admin_user_id
+                       and coalesce(reviewer.status, 0) = 0
+                    where copywriting.copywriting_id = approval_flow.copywriting_id
+                      and assignment.admin_user_id = #{actorUserId}
+                      and exists (
+                          select 1
+                          from t_user_role_map role_map
+                          inner join t_role role on role.role_id = role_map.role_id
+                          where role_map.user_id = #{actorUserId}
+                            and upper(role.name) = 'ORG_ADMIN'
+                      )
+                )
+            </when>
+            <otherwise>
+                and exists (
+                    select 1
+                    from t_copywriting copywriting
+                    where copywriting.copywriting_id = approval_flow.copywriting_id
+                      and copywriting.user_id = #{actorUserId}
+                )
+            </otherwise>
+        </choose>
+    </sql>
+
+    <update id="updateApprovalFlowStatus2Expert">
+        update t_copywriting_approval_flow
+        set current_status      = 1,
+            update_time         = now(),
+            current_processor_id=null
+        where copywriting_approval_flow_id = #{copywritingApprovalFlowId}
+          and copywriting_id = #{copywritingId}
+          and current_status = 2
+          and current_processor_id is null
+          and #{scopeActorId} = 0
+    </update>
+
+    <update id="updateApprovalFlowStatus2AI">
+        update t_copywriting_approval_flow
+        set current_status = 2,
+            update_time = now(),
+            current_processor_id = null
+        where copywriting_approval_flow_id = #{copywritingApprovalFlowId}
+          and copywriting_id = #{copywritingId}
+          and current_status = 0
+        <choose>
+            <when test="globalAccess != null and globalAccess">
+                <include refid="globalWorkflowAdminCondition"/>
+            </when>
+            <otherwise>
+                and current_processor_id = #{currentProcessorId}
+                and exists (
+                    select 1
+                    from t_copywriting copywriting
+                    where copywriting.copywriting_id = t_copywriting_approval_flow.copywriting_id
+                      and copywriting.user_id = #{currentProcessorId}
+                )
+            </otherwise>
+        </choose>
+    </update>
+
+    <update id="updateApprovalFlowStatus2PlatForm">
+        update t_copywriting_approval_flow
+        set current_status      = 3,
+            update_time         = now(),
+            current_processor_id=null
+        where copywriting_approval_flow_id = #{copywritingApprovalFlowId}
+          and copywriting_id = #{copywritingId}
+          and current_status = 1
+        <choose>
+            <when test="globalAccess != null and globalAccess">
+                <include refid="globalWorkflowAdminCondition"/>
+            </when>
+            <when test="currentProcessorId != null">
+                and current_processor_id = #{currentProcessorId}
+                <include refid="assignedExpertCondition"/>
+            </when>
+            <otherwise>and 1 = 0</otherwise>
+        </choose>
+    </update>
+
+    <update id="updateApprovalFlowStatus2Complete">
+        update t_copywriting_approval_flow
+        set current_status = 4,
+            update_time    = now()
+        where copywriting_approval_flow_id = #{copywritingApprovalFlowId}
+          and copywriting_id = #{copywritingId}
+          and current_status = 3
+        <choose>
+            <when test="globalAccess != null and globalAccess">
+                <include refid="globalWorkflowAdminCondition"/>
+            </when>
+            <otherwise>
+                and current_processor_id = #{currentProcessorId}
+                <include refid="assignedOrganizationAdminCondition"/>
+            </otherwise>
+        </choose>
+    </update>
+
+    <update id="updateApprovalFlowStatus2Rejected">
+        update t_copywriting_approval_flow
+        set current_status      = 5,
+            update_time         = now(),
+            current_processor_id=null
+        where copywriting_approval_flow_id = #{copywritingApprovalFlowId}
+          and copywriting_id = #{copywritingId}
+          and current_status = #{currentStatus}
+        <choose>
+            <when test="globalAccess != null and globalAccess">
+                <include refid="globalWorkflowAdminCondition"/>
+            </when>
+            <when test="currentProcessorId != null">
+                and current_processor_id = #{currentProcessorId}
+            </when>
+            <otherwise>and current_processor_id is null</otherwise>
+        </choose>
+        <if test="(globalAccess == null or !globalAccess) and currentStatus != null and currentStatus == 1 and currentProcessorId != null">
+            <include refid="assignedExpertCondition"/>
+        </if>
+        <if test="(globalAccess == null or !globalAccess) and currentStatus != null and currentStatus == 3 and currentProcessorId != null">
+            <include refid="assignedOrganizationAdminCondition"/>
+        </if>
+        <if test="(globalAccess == null or !globalAccess) and currentStatus != null and currentStatus == 0 and currentProcessorId != null">
+            and exists (
+                select 1
+                from t_copywriting copywriting
+                where copywriting.copywriting_id = t_copywriting_approval_flow.copywriting_id
+                  and copywriting.user_id = #{currentProcessorId}
+            )
+        </if>
+        <if test="(globalAccess == null or !globalAccess) and currentStatus != null and currentStatus == 2">
+            and #{scopeActorId} = 0
+        </if>
+        <if test="(globalAccess == null or !globalAccess) and currentStatus != null and currentStatus != 2 and currentProcessorId == null">
+            and 1 = 0
+        </if>
+    </update>
+
+    <update id="updateApprovalFlowCurrentProcessorId2Assistant">
+        update t_copywriting_approval_flow
+        set current_processor_id = #{assistantId},
+            update_time          = now()
+        where copywriting_approval_flow_id = #{approvalFlowId}
+          and current_processor_id = #{expertId}
+          and current_status = 1
+    </update>
+    <update id="updateApprovalFlowCurrentProcessorIdOnExpert">
+        update t_copywriting_approval_flow
+        set current_processor_id = #{currentProcessorId},
+            update_time          = now()
+        where copywriting_approval_flow_id = #{copywritingApprovalFlowId}
+          and current_processor_id IS NULL
+          and current_status = 1
+        <choose>
+            <when test="globalAccess != null and globalAccess">
+                <include refid="globalWorkflowAdminCondition"/>
+            </when>
+            <otherwise>
+                and exists (
+                    select 1
+                    from t_user_role_map urm
+                    inner join t_role r on r.role_id = urm.role_id
+                    where urm.user_id = #{currentProcessorId} and upper(r.name) = 'EXPERT'
+                )
+                <include refid="assignedExpertCondition"/>
+            </otherwise>
+        </choose>
+    </update>
+    <update id="updateApprovalFlowCurrentProcessorIdOnPlatForm">
+        update t_copywriting_approval_flow
+        set current_processor_id = #{currentProcessorId},
+            update_time          = now()
+        where copywriting_approval_flow_id = #{copywritingApprovalFlowId}
+          and current_processor_id IS NULL
+          and current_status = 3
+        <choose>
+            <when test="globalAccess != null and globalAccess">
+                <include refid="globalWorkflowAdminCondition"/>
+            </when>
+            <otherwise>
+                <include refid="assignedOrganizationAdminCondition"/>
+            </otherwise>
+        </choose>
+    </update>
+
+    <select id="selectCopyWritingApprovalFlowByCopyWritingApprovalFlowId"
+            resultMap="BaseResultMap">
+        select copywriting_id, current_processor_id, current_status
+        from t_copywriting_approval_flow
+        where copywriting_approval_flow_id = #{copywritingApprovalFlowId}
+    </select>
+    <select id="selectCopywritingApprovalFlowListPageByCopywritingIdsAndApprovalStatus" resultMap="BaseResultMap">
+        select copywriting_approval_flow_id ,copywriting_id,current_processor_id,current_status,create_time from
+        t_copywriting_approval_flow where copywriting_id in
+        <foreach item="item" index="index" collection="copywritingIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and current_status=#{approvalStatus}
+        order by id desc
+        limit #{offset}, #{size}
+    </select>
+    <select id="selectCopywritingApprovalFlowListPageByCopywritingIds"
+            resultType="com.hzmwmt.infrastructure.dao.po.CopywritingApprovalFlow">
+        select copywriting_approval_flow_id, copywriting_id,current_processor_id,current_status,create_time from
+        t_copywriting_approval_flow where
+        copywriting_id in
+        <foreach item="item" index="index" collection="copywritingIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectLatestByCopywritingId" resultMap="BaseResultMap">
+        select id,
+               copywriting_approval_flow_id,
+               copywriting_id,
+               current_processor_id,
+               current_status,
+               create_time,
+               update_time
+        from t_copywriting_approval_flow
+        where copywriting_id = #{copywritingId}
+        order by id desc
+        limit 1
+    </select>
+
+    <select id="selectVisibleApprovalFlowsPage" resultMap="BaseResultMap">
+        select approval_flow.id,
+               approval_flow.copywriting_approval_flow_id,
+               approval_flow.copywriting_id,
+               approval_flow.current_processor_id,
+               approval_flow.current_status,
+               approval_flow.create_time,
+               approval_flow.update_time
+        from t_copywriting_approval_flow approval_flow
+        where approval_flow.current_status = #{approvalStatus}
+        <include refid="visibleApprovalFlowForScopeCondition"/>
+        order by approval_flow.copywriting_approval_flow_id desc
+        limit #{offset}, #{size}
+    </select>
+
+    <select id="countVisibleApprovalFlows" resultType="long">
+        select count(1)
+        from t_copywriting_approval_flow approval_flow
+        where approval_flow.current_status = #{approvalStatus}
+        <include refid="visibleApprovalFlowForScopeCondition"/>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,25 @@
+# Sources reconstructed from the current production frontend release.
+# Keep this list separate from copywriting_workflow_release_files.txt.
+
+# User frontend production compatibility
+feibo/src/components/AgentLibrary.tsx
+feibo/src/components/BottomPanel.tsx
+feibo/src/components/Header.tsx
+feibo/src/components/VoicePanel.tsx
+feibo/src/router/AppRouter.tsx
+feibo/src/router/routePaths.ts
+feibo/src/services/aiShardingApi.ts
+feibo/src/services/digitalHumanApi.ts
+feibo/vite.config.ts
+feibo/.env.example
+
+# Admin frontend production compatibility
+feibo_backend/src/pages/Dashboard.tsx
+feibo_backend/src/pages/users/SynthesisRecords.tsx
+feibo_backend/src/services/digitalWorksService.ts
+feibo_backend/src/services/logService.ts
+
+# Required by HEAD App.tsx but accidentally ignored by feibo_backend/.gitignore.
+# Their content is present in the current production bundle.
+feibo_backend/src/pages/logs/LoginLog.tsx
+feibo_backend/src/pages/logs/OperationLog.tsx

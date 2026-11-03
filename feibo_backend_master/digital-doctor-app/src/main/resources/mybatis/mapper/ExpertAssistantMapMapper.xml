@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.ExpertAssistantMapMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.ExpertAssistantMap">
+        <id property="id" column="id"/>
+        <id property="expertUserId" column="expert_user_id"/>
+        <result property="assistantUserId" column="assistant_user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <select id="selectAssistantIdsByExpertId" resultType="java.lang.Long">
+        select assistant_user_id
+        from t_expert_assistant_map
+        where expert_user_id = #{expertUserId}
+    </select>
+    <select id="selectExpertIdsByAssistantId" resultType="java.lang.Long">
+        select expert_user_id
+        from t_expert_assistant_map
+        where assistant_user_id = #{assistantUserId}
+    </select>
+    <select id="selectExpertIdsPageByAssistantId" resultType="java.lang.Long">
+        select expert_user_id
+        from t_expert_assistant_map
+        where assistant_user_id = #{assistantUserId}
+        order by id desc
+            limit #{offset}, #{size}
+    </select>
+    <select id="selectAssistantIdsPageByExpertId" resultType="java.lang.Long">
+        select assistant_user_id
+        from t_expert_assistant_map
+        where expert_user_id = #{expertUserId}
+        order by id desc
+            limit #{offset}, #{size}
+    </select>
+    <select id="selectAllExpertIdsByAssistantId" resultType="java.lang.Long">
+        select expert_user_id
+        from t_expert_assistant_map
+        where assistant_user_id = #{assistantUserId}
+    </select>
+</mapper>

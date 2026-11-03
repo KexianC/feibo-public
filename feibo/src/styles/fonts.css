@@ -1,0 +1,35 @@
+@font-face {
+  font-family: 'LXGW WenKai';
+  src: local('LXGW WenKai');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ZQKNLT';
+  src: local('ZQKNLT'), url('/font/ZQKNLT-2b0a0961.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Han Sans SC Medium';
+  src: local('Source Han Sans SC Medium'), url('/font/SourceHanSansCN-Normal-df5ff3ec.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 已移除悠然小楷（slideyouran）字体 */
+
+@font-face {
+  font-family: 'STSong';
+  src: local('STSong'), url('/font/SIMSUN.TTC') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 开发环境回退：如果上述字体文件缺失，浏览器会自动使用系统或默认字体 */

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="飞驳科技（杭州）有限公司官网。飞驳数字医生工作台面向医学内容生产、审核与数字人视频合成，提供 AI 智能对话、医学内容审核和健康科普创作能力。"
+    />
+    <title>飞驳科技（杭州）有限公司 | 飞驳数字医生工作台</title>
+    <link rel="icon" href="./assets/favicon.svg" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script defer src="./js/main.js?v=20260610-duration"></script>
+  </head>
+  <body>
+    <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="返回首页">
+        <img src="./assets/logo_d.png" alt="飞驳数字医生工作台" />
+      </a>
+      <nav class="site-nav" data-nav aria-label="主导航">
+        <a href="#product">产品</a>
+        <a href="#workflow">链路</a>
+        <a href="#cases">案例</a>
+        <a href="#security">安全</a>
+      </nav>
+      <div class="header-actions">
+        <a class="button button--small button--primary" href="https://dd.hzmwmt.com" target="_blank" rel="noopener noreferrer">
+          进入工作台
+        </a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="切换深色模式">
+          <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z" />
+          </svg>
+          <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2.8v2.1M12 19.1v2.1M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M2.8 12h2.1M19.1 12h2.1M4.9 19.1l1.5-1.5M17.6 6.4l1.5-1.5" />
+          </svg>
+        </button>
+        <button class="nav-toggle" type="button" data-nav-toggle aria-label="打开导航">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <img class="hero__bg" src="./assets/medical-bg.png" alt="" aria-hidden="true" />
+        <img class="hero__doctors" src="./assets/doctor-team.png" alt="飞驳数字医生工作台医生数字形象" />
+        <div class="hero__content reveal">
+          <p class="eyebrow">飞驳科技（杭州）有限公司</p>
+          <h1>飞驳数字医生工作台</h1>
+          <p class="hero__lead">
+            面向医学内容生产、医学审核与健康科普视频创作，将 AI 智能对话、文案审校、数字人视频合成整合到同一套医疗科技工作流。
+          </p>
+          <div class="hero__actions">
+            <a class="button button--primary" href="https://dd.hzmwmt.com" target="_blank" rel="noopener noreferrer">
+              进入数字医生工作台
+            </a>
+            <a class="button button--ghost" href="#product">查看产品能力</a>
+          </div>
+          <div class="hero__signals" aria-label="产品能力摘要">
+            <span>智笔医言</span>
+            <span>智核医审</span>
+            <span>智绘医合</span>
+            <span>模型与智能体</span>
+          </div>
+        </div>
+        <div class="hero__hud reveal" aria-label="工作台状态">
+          <span class="pulse"></span>
+          <div>
+            <strong>AI medical workspace</strong>
+            <small>数字医生内容链路在线</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="intro section-band">
+        <div class="section-inner intro__grid">
+          <div class="intro__copy reveal">
+            <p class="eyebrow">Product Positioning</p>
+            <h2>为医学团队提供可生成、可审核、可合成的内容工作台</h2>
+          </div>
+          <div class="intro__stats reveal">
+            <div class="stat-item">
+              <strong>3</strong>
+              <span>核心工作模块</span>
+            </div>
+            <div class="stat-item">
+              <strong>5</strong>
+              <span>审核状态流转</span>
+            </div>
+            <div class="stat-item">
+              <strong>24+</strong>
+              <span>医学智能体选择</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="product section-band" id="product">
+        <div class="section-inner">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Digital Doctor Workbench</p>
+            <h2>三条产品链路，覆盖医学内容从生成到呈现</h2>
+            <p>
+              内容来自现有 FEIBO 前端工作台：智笔医言承担医学内容智能对话，智核医审承担文案审核，智绘医合承担数字人视频合成。
+            </p>
+          </div>
+
+          <div class="product-tabs reveal" role="tablist" aria-label="产品模块">
+            <button class="product-tab is-active" type="button" role="tab" aria-selected="true" data-product="zhibi">智笔医言</button>
+            <button class="product-tab" type="button" role="tab" aria-selected="false" data-product="zhihe">智核医审</button>
+            <button class="product-tab" type="button" role="tab" aria-selected="false" data-product="zhihui">智绘医合</button>
+          </div>
+
+          <div class="product-stage reveal">
+            <figure class="product-visual">
+              <img data-product-image src="./assets/product-zhibi.png" alt="智笔医言医学内容智能工作台界面" />
+            </figure>
+            <article class="product-copy">
+              <p class="product-copy__label" data-product-label>MEDSCRIBE</p>
+              <h3 data-product-title>智笔医言</h3>
+              <p data-product-desc>
+                面向医生、专家与医学内容团队的 AI 对话入口，可按专科智能体进行问答、生成科普内容、沉淀历史会话。
+              </p>
+              <ul class="feature-list" data-product-features>
+                <li>医学内容智能工作台</li>
+                <li>模型与智能体选择</li>
+                <li>对话历史与内容导出</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="capabilities section-band">
+        <div class="section-inner">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Capabilities</p>
+            <h2>围绕医学内容生产建立稳定协作面</h2>
+          </div>
+          <div class="capability-grid">
+            <article class="capability-card reveal">
+              <span class="capability-card__mark"></span>
+              <h3>智能生成</h3>
+              <p>结合医学主题、专科模型和提示模板，辅助生成科普、问答、宣教和视频脚本文案。</p>
+            </article>
+            <article class="capability-card reveal">
+              <span class="capability-card__mark"></span>
+              <h3>多级审核</h3>
+              <p>支持医生待审批、专家待审批、平台终审、审核完成、审核驳回等状态流转。</p>
+            </article>
+            <article class="capability-card reveal">
+              <span class="capability-card__mark"></span>
+              <h3>数字人合成</h3>
+              <p>从审核文案回填到数字人脚本，选择数字人、声音与模板后完成医学科普视频合成。</p>
+            </article>
+            <article class="capability-card reveal">
+              <span class="capability-card__mark"></span>
+              <h3>资源管理</h3>
+              <p>围绕会员、AI 资源余额、子账号和个人信息，保持团队使用状态清晰可见。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="workflow section-band" id="workflow">
+        <div class="section-inner workflow__grid">
+          <div class="workflow__copy reveal">
+            <p class="eyebrow">Workflow</p>
+            <h2>从医学提问到数字人视频的完整链路</h2>
+            <p data-workflow-text>
+              选择医学智能体，输入病例科普、健康宣教或内容创作需求，由智笔医言生成结构化初稿。
+            </p>
+            <div class="workflow__meter" aria-hidden="true">
+              <span data-workflow-meter></span>
+            </div>
+          </div>
+          <div class="workflow-steps reveal" role="tablist" aria-label="工作流步骤">
+            <button class="workflow-step is-active" type="button" data-step="0">
+              <strong>01</strong>
+              <span>智能生成</span>
+            </button>
+            <button class="workflow-step" type="button" data-step="1">
+              <strong>02</strong>
+              <span>医学审核</span>
+            </button>
+            <button class="workflow-step" type="button" data-step="2">
+              <strong>03</strong>
+              <span>数字人合成</span>
+            </button>
+            <button class="workflow-step" type="button" data-step="3">
+              <strong>04</strong>
+              <span>发布沉淀</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="cases section-band" id="cases">
+        <div class="section-inner">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Medical Popularization</p>
+            <h2>医疗科普场景案例</h2>
+            <p>现有工作台案例覆盖健康知识普及、知情同意说明、疾病早筛、伤口处理与青少年身高管理等主题。</p>
+          </div>
+          <div class="case-grid" data-case-grid></div>
+        </div>
+      </section>
+
+      <section class="security section-band" id="security">
+        <div class="section-inner security__grid">
+          <div class="security__copy reveal">
+            <p class="eyebrow">Governance</p>
+            <h2>以安全治理支撑医学内容协作</h2>
+            <p>
+              平台围绕账户信息、访问日志、操作记录、上传与生成内容建立数据保护机制，结合数据加密、访问控制和安全审计，保障医学内容生产过程可追踪、可管理。
+            </p>
+          </div>
+          <div class="security-points reveal">
+            <span>数据加密</span>
+            <span>访问控制</span>
+            <span>安全审计</span>
+            <span>账户保护</span>
+            <span>审核留痕</span>
+            <span>内容治理</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="final-cta">
+        <div class="section-inner final-cta__inner reveal">
+          <p class="eyebrow">Feibo Digital Doctor</p>
+          <h2>进入飞驳数字医生工作台</h2>
+          <p>连接医学内容创作、专业审核和数字人呈现，让健康科普内容生产更集中、更可控。</p>
+          <a class="button button--primary" href="https://dd.hzmwmt.com" target="_blank" rel="noopener noreferrer">
+            立即进入 dd.hzmwmt.com
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="section-inner site-footer__inner">
+        <img src="./assets/logo_d.png" alt="飞驳数字医生工作台" />
+        <span>© 2026 飞驳科技（杭州）有限公司</span>
+      </div>
+    </footer>
+
+    <dialog class="video-dialog" data-video-dialog aria-label="案例视频预览">
+      <button class="dialog-close" type="button" data-dialog-close aria-label="关闭视频预览"></button>
+      <div class="video-dialog__content">
+        <h3 data-dialog-title></h3>
+        <p data-dialog-desc></p>
+        <video data-dialog-video controls playsinline poster=""></video>
+      </div>
+    </dialog>
+  </body>
+</html>

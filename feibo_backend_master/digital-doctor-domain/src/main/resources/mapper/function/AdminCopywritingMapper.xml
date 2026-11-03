@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.domain.mapper.function.AdminCopywritingMapper">
+
+    <!-- 查询待专家组专业审核的文案列表 -->
+    <select id="selectExpertApprovalCopywritings" resultType="com.hzmwmt.domain.entity.function.TCopywriting">
+        SELECT c.*
+        FROM t_copywriting c
+        JOIN t_copywriting_approval_flow caf ON c.copywriting_id = caf.copywriting_id
+        WHERE caf.current_status = 1
+        <if test="title != null and title != ''">
+            AND c.title LIKE CONCAT('%', #{title}, '%')
+        </if>
+        <if test="categoryId != null">
+            AND c.copywriting_category_id = #{categoryId}
+        </if>
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 查询所属医院/机构待终审的文案列表 -->
+    <select id="selectPlatformApprovalCopywritings" resultType="com.hzmwmt.domain.entity.function.TCopywriting">
+        SELECT c.*
+        FROM t_copywriting c
+        JOIN t_copywriting_approval_flow caf ON c.copywriting_id = caf.copywriting_id
+        WHERE caf.current_status = 3
+        <if test="title != null and title != ''">
+            AND c.title LIKE CONCAT('%', #{title}, '%')
+        </if>
+        <if test="categoryId != null">
+            AND c.copywriting_category_id = #{categoryId}
+        </if>
+        ORDER BY c.create_time DESC
+    </select>
+</mapper>

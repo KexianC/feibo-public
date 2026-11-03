@@ -1,0 +1,16 @@
+feibo_backend_master/digital-doctor-api/src/main/java/com/hzmwmt/api/ICopywritingApi.java
+feibo_backend_master/digital-doctor-api/src/main/java/com/hzmwmt/api/dto/CopywritingAuditDetailResponseDTO.java
+feibo_backend_master/digital-doctor-api/src/main/java/com/hzmwmt/api/dto/CopywritingAuditRecordResponseDTO.java
+feibo_backend_master/digital-doctor-domain/src/main/java/com/hzmwmt/domain/copywriting/adapter/repository/ICopyWritingRepository.java
+feibo_backend_master/digital-doctor-domain/src/main/java/com/hzmwmt/domain/copywriting/model/aggregate/ApprovalCopywritingAggregate.java
+feibo_backend_master/digital-doctor-domain/src/main/java/com/hzmwmt/domain/copywriting/model/aggregate/CopywritingAuditDetailAggregate.java
+feibo_backend_master/digital-doctor-domain/src/main/java/com/hzmwmt/domain/copywriting/model/entity/CopywritingAuditRecordEntity.java
+feibo_backend_master/digital-doctor-domain/src/main/java/com/hzmwmt/domain/copywriting/service/ICopywritingManagerService.java
+feibo_backend_master/digital-doctor-domain/src/main/java/com/hzmwmt/domain/copywriting/service/manager/CopywritingManagerService.java
+feibo_backend_master/digital-doctor-infrastructure/src/main/java/com/hzmwmt/infrastructure/adapter/repository/CopyWritingRepository.java
+feibo_backend_master/digital-doctor-infrastructure/src/main/java/com/hzmwmt/infrastructure/dao/CopywritingApprovalFlowMapper.java
+feibo_backend_master/digital-doctor-infrastructure/src/main/java/com/hzmwmt/infrastructure/dao/CopywritingApprovalHistoryMapper.java
+feibo_backend_master/digital-doctor-infrastructure/src/main/java/com/hzmwmt/infrastructure/dao/po/CopywritingAuditRecordView.java
+feibo_backend_master/digital-doctor-trigger/src/main/java/com/hzmwmt/trigger/http/client/CopywritingController.java
+feibo_backend_master/digital-doctor-app/src/main/resources/mybatis/mapper/CopywritingApprovalFlowMapper.xml
+feibo_backend_master/digital-doctor-app/src/main/resources/mybatis/mapper/CopywritingApprovalHistoryMapper.xml

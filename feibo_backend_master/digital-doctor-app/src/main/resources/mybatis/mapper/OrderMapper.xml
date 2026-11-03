@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.OrderMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.Order">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="externalTransactionId" column="external_transaction_id"/>
+        <result property="productType" column="product_type"/>
+        <result property="url" column="url"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="status" column="status"/>
+        <result property="productName" column="product_name"/>
+        <result property="entitlementSnapshot" column="entitlement_snapshot"/>
+        <result property="createTime" column="create_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="validTime" column="valid_time"/>
+        <result property="creatingLock" column="creating_lock"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <!--    最后一道防线limit1-->
+    <select id="selectUnPayOrderByUserIdAndProductId" resultMap="BaseResultMap">
+        select order_id,
+               user_id,
+               product_id,
+               product_type,
+               entitlement_snapshot,
+               status,
+               url,
+               total_amount,
+               product_name,
+               valid_time,
+               create_time,
+               external_transaction_id
+        from t_order
+        where user_id = #{userId}
+          AND product_id = #{productId}
+          AND product_type = #{productType}
+          AND status in (0, 1)
+          AND valid_time > NOW()
+        order by id desc limit 1
+    </select>
+    <select id="selectNoPayNotifyTrxIds" resultType="java.lang.String">
+        SELECT external_transaction_id
+        FROM t_order
+        WHERE status IN (1, 2)
+          AND entitlement_snapshot IS NOT NULL
+          AND external_transaction_id IS NOT NULL
+          AND NOW() >= create_time + INTERVAL 5 MINUTE
+          AND NOW() >= COALESCE(update_time,create_time) + INTERVAL 5 MINUTE
+        ORDER BY COALESCE(update_time,create_time),id
+            LIMIT 10
+    </select>
+
+    <select id="selectOrderByOrderId" resultMap="BaseResultMap">
+        select order_id,
+               user_id,
+               product_id,
+               product_type,
+               status,
+               url,
+               total_amount,
+               product_name,
+               valid_time,
+               create_time,
+               external_transaction_id
+        from t_order
+        where order_id = #{orderId}
+    </select>
+
+    <update id="updateOrderStatusToWaitPay">
+        UPDATE t_order
+        SET status                 = 1,
+            url=#{url},
+            external_transaction_id=#{externalTransactionId},
+            update_time            = now()
+        WHERE order_id = #{orderId}
+          AND status = 0;
+    </update>
+
+    <update id="updateOrderStatusToPaySuccess">
+        UPDATE t_order
+        SET status       = 2,
+            pay_time=#{payTime},
+            update_time  = now(),
+            creating_lock=null
+        WHERE order_id = #{orderId}
+          AND status IN (0, 1);
+    </update>
+
+    <update id="updateOrderStatusToClosedByFailure">
+        UPDATE t_order
+        SET status       = 5,
+            update_time  = now(),
+            creating_lock=null
+        WHERE order_id = #{orderId}
+          AND status IN (0, 1);
+    </update>
+
+    <update id="updateOrderStatusToRefundWait">
+        UPDATE t_order
+        SET status      = 4,
+            update_time = now()
+        WHERE order_id = #{orderId}
+          AND status IN (2, 3);
+    </update>
+
+    <update id="updateOrderStatusToClosedAfterRefund">
+        UPDATE t_order
+        SET status      = 5,
+            update_time = now()
+        WHERE order_id = #{orderId}
+          AND status = 4;
+    </update>
+
+    <update id="updateOrderStatusToDealDone">
+        UPDATE t_order
+        SET status      = 3,
+            update_time = now()
+        WHERE order_id = #{orderId}
+          AND status = 2;
+    </update>
+
+</mapper>

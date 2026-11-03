@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3S 音频克隆 API 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            background: white;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #7f8c8d;
+            font-size: 0.85em;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        #statusResult {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .response-section {
+            grid-column: 1 / -1;
+        }
+
+        .response-content {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 200px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-info {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .error-info {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1565c0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎙️ 3S 音频克隆训练</h1>
+            <p>基于开放平台的极速声音克隆测试工具</p>
+        </div>
+
+        <div class="content">
+            <!-- 音频克隆任务提交 -->
+            <div class="section">
+                <h2>📤 提交 3S 克隆任务</h2>
+                <div class="alert-info">
+                    <strong>接口说明：</strong>目前3S克隆生成的发音人，不支持ssml标记语言的w和p标签，使用需联系商务开通试用权限。
+                    <p id="authStatus" role="status">正在读取本机合成接口配置...</p>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="previewOnly">
+                    <label for="previewOnly">只预览请求（不调用接口，不消耗额度）</label>
+                </div>
+                
+                <form id="cloneForm">
+                    <div class="form-group">
+                        <label for="audioFile">上传音频文件 *</label>
+                        <input type="file" id="audioFile" name="file" accept="audio/*">
+                        <small>时长要求在3秒～150秒之间，最好在6-10秒以内。需要有人声，人声吐字清晰，无大噪音、背景音，无较长停顿，前后无长静音。</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wavUri">或填写音频URL (二选一)</label>
+                        <input type="url" id="wavUri" name="wavUri" placeholder="https://example.com/audio.wav">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="text">音频对应的文本内容</label>
+                        <textarea id="text" name="text" placeholder="建议输入准确的文本。要求：文本表达正确语义，并与音频相匹配，只能包含中英文，标点使用准确。"></textarea>
+                        <small>默认会使用识别的结果（非100%准确），建议用户输入准确的文本。示例：今天是一九九四年十月日，我站在天安门广场，和伟大的祖国一起歌唱。</small>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="willReduceNoise" name="willReduceNoise" value="true">
+                        <label for="willReduceNoise">将音频降噪处理 (willReduceNoise)</label>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="willStripSilence" name="willStripSilence" value="true">
+                        <label for="willStripSilence">切除音频头尾的静音片段 (willStripSilence)</label>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitButton">🚀 提交克隆任务</button>
+                </form>
+            </div>
+
+            <!-- 响应结果显示 -->
+            <div class="section response-section">
+                <h2>📋 API 响应结果</h2>
+                <div id="statusResult" role="status" hidden></div>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>正在处理请求，请稍候...</p>
+                </div>
+                <div class="response-content" id="responseContent">等待API调用...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 与数字人建模测试页共用本机私有配置，不将密钥写入前端源码。
+        const API_CONFIG = {
+            baseUrl: 'https://open.mobvoi.com/clone'
+        };
+        let authConfigPromise;
+        let isSubmitting = false;
+
+        function loadAuthConfig() {
+            if (!authConfigPromise) {
+                authConfigPromise = new Promise((resolve, reject) => {
+                    if (window.location.protocol !== 'file:') {
+                        reject(new Error('请使用本机文件方式打开此测试页，以读取本地私有鉴权配置。'));
+                        return;
+                    }
+                    const script = document.createElement('script');
+                    script.src = '../.local-config/digital-human-clone.credentials.js';
+                    script.onload = () => {
+                        const config = window.DIGITAL_HUMAN_CLONE_AUTH;
+                        delete window.DIGITAL_HUMAN_CLONE_AUTH;
+                        script.remove();
+                        if (typeof config?.appKey !== 'string' || !config.appKey.trim()
+                            || typeof config?.appSecret !== 'string' || !config.appSecret.trim()) {
+                            reject(new Error('本地合成接口 appKey 或 appSecret 未配置，已阻止发送请求。'));
+                            return;
+                        }
+                        resolve(Object.freeze({
+                            appKey: config.appKey.trim(),
+                            appSecret: config.appSecret.trim()
+                        }));
+                    };
+                    script.onerror = () => {
+                        script.remove();
+                        reject(new Error('未能加载本地合成接口鉴权配置，已阻止发送请求。'));
+                    };
+                    document.head.appendChild(script);
+                });
+            }
+            return authConfigPromise;
+        }
+
+        /**
+         * MD5加密函数 - 浏览器兼容版本
+         */
+        function md5(str) {
+            function rotateLeft(value, amount) {
+                return (value << amount) | (value >>> (32 - amount));
+            }
+            function addUnsigned(x, y) {
+                return ((x & 0x7FFFFFFF) + (y & 0x7FFFFFFF)) ^ (x & 0x80000000) ^ (y & 0x80000000);
+            }
+            function md5cmn(q, a, b, x, s, t) {
+                return addUnsigned(rotateLeft(addUnsigned(addUnsigned(a, q), addUnsigned(x, t)), s), b);
+            }
+            function md5ff(a, b, c, d, x, s, t) {
+                return md5cmn((b & c) | ((~b) & d), a, b, x, s, t);
+            }
+            function md5gg(a, b, c, d, x, s, t) {
+                return md5cmn((b & d) | (c & (~d)), a, b, x, s, t);
+            }
+            function md5hh(a, b, c, d, x, s, t) {
+                return md5cmn(b ^ c ^ d, a, b, x, s, t);
+            }
+            function md5ii(a, b, c, d, x, s, t) {
+                return md5cmn(c ^ (b | (~d)), a, b, x, s, t);
+            }
+            
+            function convertToWordArray(input) {
+                const bytes = new TextEncoder().encode(input);
+                const numberOfWords = (((bytes.length + 8) >>> 6) + 1) * 16;
+                const wordArray = new Array(numberOfWords).fill(0);
+                for (let i = 0; i < bytes.length; i++) {
+                    wordArray[i >>> 2] |= bytes[i] << ((i % 4) * 8);
+                }
+                wordArray[bytes.length >>> 2] |= 0x80 << ((bytes.length % 4) * 8);
+                wordArray[numberOfWords - 2] = bytes.length * 8;
+                wordArray[numberOfWords - 1] = Math.floor(bytes.length / 0x20000000);
+                return wordArray;
+            }
+
+            function wordToHex(value) {
+                let hex = '';
+                for (let i = 0; i <= 3; i++) {
+                    const byte = (value >>> (i * 8)) & 255;
+                    hex += ('0' + byte.toString(16)).slice(-2);
+                }
+                return hex;
+            }
+
+            const x = convertToWordArray(str);
+            let a = 0x67452301;
+            let b = 0xEFCDAB89;
+            let c = 0x98BADCFE;
+            let d = 0x10325476;
+
+            for (let i = 0; i < x.length; i += 16) {
+                const olda = a;
+                const oldb = b;
+                const oldc = c;
+                const oldd = d;
+
+                a = md5ff(a, b, c, d, x[i + 0], 7, 0xD76AA478);
+                d = md5ff(d, a, b, c, x[i + 1], 12, 0xE8C7B756);
+                c = md5ff(c, d, a, b, x[i + 2], 17, 0x242070DB);
+                b = md5ff(b, c, d, a, x[i + 3], 22, 0xC1BDCEEE);
+                a = md5ff(a, b, c, d, x[i + 4], 7, 0xF57C0FAF);
+                d = md5ff(d, a, b, c, x[i + 5], 12, 0x4787C62A);
+                c = md5ff(c, d, a, b, x[i + 6], 17, 0xA8304613);
+                b = md5ff(b, c, d, a, x[i + 7], 22, 0xFD469501);
+                a = md5ff(a, b, c, d, x[i + 8], 7, 0x698098D8);
+                d = md5ff(d, a, b, c, x[i + 9], 12, 0x8B44F7AF);
+                c = md5ff(c, d, a, b, x[i + 10], 17, 0xFFFF5BB1);
+                b = md5ff(b, c, d, a, x[i + 11], 22, 0x895CD7BE);
+                a = md5ff(a, b, c, d, x[i + 12], 7, 0x6B901122);
+                d = md5ff(d, a, b, c, x[i + 13], 12, 0xFD987193);
+                c = md5ff(c, d, a, b, x[i + 14], 17, 0xA679438E);
+                b = md5ff(b, c, d, a, x[i + 15], 22, 0x49B40821);
+
+                a = md5gg(a, b, c, d, x[i + 1], 5, 0xF61E2562);
+                d = md5gg(d, a, b, c, x[i + 6], 9, 0xC040B340);
+                c = md5gg(c, d, a, b, x[i + 11], 14, 0x265E5A51);
+                b = md5gg(b, c, d, a, x[i + 0], 20, 0xE9B6C7AA);
+                a = md5gg(a, b, c, d, x[i + 5], 5, 0xD62F105D);
+                d = md5gg(d, a, b, c, x[i + 10], 9, 0x02441453);
+                c = md5gg(c, d, a, b, x[i + 15], 14, 0xD8A1E681);
+                b = md5gg(b, c, d, a, x[i + 4], 20, 0xE7D3FBC8);
+                a = md5gg(a, b, c, d, x[i + 9], 5, 0x21E1CDE6);
+                d = md5gg(d, a, b, c, x[i + 14], 9, 0xC33707D6);
+                c = md5gg(c, d, a, b, x[i + 3], 14, 0xF4D50D87);
+                b = md5gg(b, c, d, a, x[i + 8], 20, 0x455A14ED);
+                a = md5gg(a, b, c, d, x[i + 13], 5, 0xA9E3E905);
+                d = md5gg(d, a, b, c, x[i + 2], 9, 0xFCEFA3F8);
+                c = md5gg(c, d, a, b, x[i + 7], 14, 0x676F02D9);
+                b = md5gg(b, c, d, a, x[i + 12], 20, 0x8D2A4C8A);
+
+                a = md5hh(a, b, c, d, x[i + 5], 4, 0xFFFA3942);
+                d = md5hh(d, a, b, c, x[i + 8], 11, 0x8771F681);
+                c = md5hh(c, d, a, b, x[i + 11], 16, 0x6D9D6122);
+                b = md5hh(b, c, d, a, x[i + 14], 23, 0xFDE5380C);
+                a = md5hh(a, b, c, d, x[i + 1], 4, 0xA4BEEA44);
+                d = md5hh(d, a, b, c, x[i + 4], 11, 0x4BDECFA9);
+                c = md5hh(c, d, a, b, x[i + 7], 16, 0xF6BB4B60);
+                b = md5hh(b, c, d, a, x[i + 10], 23, 0xBEBFBC70);
+                a = md5hh(a, b, c, d, x[i + 13], 4, 0x289B7EC6);
+                d = md5hh(d, a, b, c, x[i + 0], 11, 0xEAA127FA);
+                c = md5hh(c, d, a, b, x[i + 3], 16, 0xD4EF3085);
+                b = md5hh(b, c, d, a, x[i + 6], 23, 0x04881D05);
+                a = md5hh(a, b, c, d, x[i + 9], 4, 0xD9D4D039);
+                d = md5hh(d, a, b, c, x[i + 12], 11, 0xE6DB99E5);
+                c = md5hh(c, d, a, b, x[i + 15], 16, 0x1FA27CF8);
+                b = md5hh(b, c, d, a, x[i + 2], 23, 0xC4AC5665);
+
+                a = md5ii(a, b, c, d, x[i + 0], 6, 0xF4292244);
+                d = md5ii(d, a, b, c, x[i + 7], 10, 0x432AFF97);
+                c = md5ii(c, d, a, b, x[i + 14], 15, 0xAB9423A7);
+                b = md5ii(b, c, d, a, x[i + 5], 21, 0xFC93A039);
+                a = md5ii(a, b, c, d, x[i + 12], 6, 0x655B59C3);
+                d = md5ii(d, a, b, c, x[i + 3], 10, 0x8F0CCC92);
+                c = md5ii(c, d, a, b, x[i + 10], 15, 0xFFEFF47D);
+                b = md5ii(b, c, d, a, x[i + 1], 21, 0x85845DD1);
+                a = md5ii(a, b, c, d, x[i + 8], 6, 0x6FA87E4F);
+                d = md5ii(d, a, b, c, x[i + 15], 10, 0xFE2CE6E0);
+                c = md5ii(c, d, a, b, x[i + 6], 15, 0xA3014314);
+                b = md5ii(b, c, d, a, x[i + 13], 21, 0x4E0811A1);
+                a = md5ii(a, b, c, d, x[i + 4], 6, 0xF7537E82);
+                d = md5ii(d, a, b, c, x[i + 11], 10, 0xBD3AF235);
+                c = md5ii(c, d, a, b, x[i + 2], 15, 0x2AD7D2BB);
+                b = md5ii(b, c, d, a, x[i + 9], 21, 0xEB86D391);
+
+                a = addUnsigned(a, olda);
+                b = addUnsigned(b, oldb);
+                c = addUnsigned(c, oldc);
+                d = addUnsigned(d, oldd);
+            }
+
+            return (wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d)).toLowerCase();
+        }
+
+        /**
+         * 生成API签名
+         */
+        function generateSignature(timestamp, config) {
+            const plainText = `${config.appKey}+${config.appSecret}+${timestamp}`;
+            return md5(plainText);
+        }
+
+        /**
+         * 显示加载状态
+         */
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        /**
+         * 显示API响应结果
+         */
+        function displayResponse(response, type) {
+            const responseContent = document.getElementById('responseContent');
+            const timestamp = new Date().toLocaleString();
+            if (responseContent.textContent === '等待API调用...') responseContent.textContent = '';
+            
+            const responseText = `[${timestamp}] ${type} API响应:\n${JSON.stringify(response, null, 2)}\n\n`;
+            responseContent.textContent = responseText + responseContent.textContent;
+        }
+
+        /**
+         * 显示错误信息
+         */
+        function displayError(error, type) {
+            const responseContent = document.getElementById('responseContent');
+            const timestamp = new Date().toLocaleString();
+            if (responseContent.textContent === '等待API调用...') responseContent.textContent = '';
+            
+            const errorText = `[${timestamp}] ${type} API错误:\n${error}\n\n`;
+            responseContent.textContent = errorText + responseContent.textContent;
+            displayStatus(error, true);
+        }
+
+        function displayStatus(message, isError = false) {
+            const statusResult = document.getElementById('statusResult');
+            statusResult.hidden = false;
+            statusResult.className = isError ? 'error-info' : 'status-info';
+            statusResult.textContent = message;
+        }
+
+        /**
+         * 提交 3S 克隆任务
+         */
+        async function submitCloneTask(e) {
+            e.preventDefault();
+            if (isSubmitting) return;
+
+            const statusResult = document.getElementById('statusResult');
+            statusResult.hidden = true;
+            statusResult.textContent = '';
+            
+            const fileInput = document.getElementById('audioFile');
+            const wavUriInput = document.getElementById('wavUri');
+            const textInput = document.getElementById('text');
+            const willReduceNoise = document.getElementById('willReduceNoise').checked;
+            const willStripSilence = document.getElementById('willStripSilence').checked;
+            
+            const file = fileInput.files[0];
+            const wavUri = wavUriInput.value.trim();
+            const text = textInput.value.trim();
+
+            if (!file && !wavUri) {
+                displayError('请上传音频文件或提供音频URL，已阻止发送请求。', '3S克隆任务提交');
+                return;
+            }
+
+            if (file && file.size === 0) {
+                displayError('音频文件为空，请重新选择，已阻止发送请求。', '3S克隆任务提交');
+                return;
+            }
+
+            if (!file && wavUri) {
+                try {
+                    if (!['https:', 'http:'].includes(new URL(wavUri).protocol)) throw new Error();
+                } catch {
+                    displayError('请填写有效的 HTTP 或 HTTPS 音频URL，已阻止发送请求。', '3S克隆任务提交');
+                    return;
+                }
+            }
+
+            isSubmitting = true;
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            showLoading(true);
+            
+            try {
+                // 3S克隆接口的所有参数（包含认证参数）都在Body中，使用FormData
+                const config = await loadAuthConfig();
+                const formData = new FormData();
+                
+                const timestamp = Math.floor(Date.now() / 1000).toString();
+                const signature = generateSignature(timestamp, config);
+                
+                // 添加必填的认证参数到Body
+                formData.append('appkey', config.appKey);
+                formData.append('signature', signature);
+                formData.append('timestamp', timestamp);
+                
+                // 添加业务参数
+                formData.append('source', 'galaxy_fastv7'); // 默认值
+                
+                if (file) {
+                    formData.append('file', file);
+                } else if (wavUri) {
+                    formData.append('wavUri', wavUri);
+                }
+                
+                if (text) {
+                    formData.append('text', text);
+                }
+                
+                formData.append('willReduceNoise', willReduceNoise.toString());
+                formData.append('willStripSilence', willStripSilence.toString());
+
+                if (document.getElementById('previewOnly').checked) {
+                    displayResponse({
+                        previewOnly: true,
+                        message: '仅本地预览，未发送 API 请求，不消耗额度。',
+                        url: API_CONFIG.baseUrl,
+                        method: 'POST',
+                        body: {
+                            appkey: '[已配置，已隐藏]',
+                            signature: '[已生成，已隐藏]',
+                            timestamp,
+                            source: formData.get('source'),
+                            ...(file ? { file: { name: file.name, size: file.size, type: file.type } } : { wavUri }),
+                            ...(text ? { text } : {}),
+                            willReduceNoise: formData.get('willReduceNoise'),
+                            willStripSilence: formData.get('willStripSilence')
+                        }
+                    }, '3S克隆任务提交（离线预览）');
+                    displayStatus('仅本地预览，未发送 API 请求。');
+                    return;
+                }
+
+                // 发送请求
+                // 注意：不要设置 'Content-Type': 'multipart/form-data'，让浏览器自动处理 boundary
+                const response = await fetch(API_CONFIG.baseUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP 请求失败：${response.status}`);
+                }
+
+                const result = await response.json();
+                displayResponse(result, '3S克隆任务提交');
+
+                if (result?.code === 0 && result.speaker) {
+                    displayStatus(`✅ 克隆成功！\n发音人名称: ${result.speaker}`);
+                } else {
+                    const reason = result?.message || '接口未返回发音人名称，请检查响应结果。';
+                    displayStatus(`❌ 克隆未成功（code: ${result?.code ?? '未知'}）：${reason}`, true);
+                }
+
+            } catch (error) {
+                displayError(error.message, '3S克隆任务提交');
+            } finally {
+                showLoading(false);
+                submitButton.disabled = false;
+                isSubmitting = false;
+            }
+        }
+
+        loadAuthConfig().then(() => {
+            document.getElementById('authStatus').textContent = '已加载与数字人建模相同的本机凭据；3S 克隆是否开通以接口响应为准。';
+        }).catch(error => {
+            document.getElementById('authStatus').textContent = error.message;
+        });
+
+        // 绑定表单提交事件
+        document.getElementById('cloneForm').addEventListener('submit', submitCloneTask);
+        
+        // 文件选择和URL输入互斥处理
+        const audioFileInput = document.getElementById('audioFile');
+        const wavUriInput = document.getElementById('wavUri');
+        
+        audioFileInput.addEventListener('change', () => {
+            if (audioFileInput.files.length > 0) {
+                wavUriInput.value = '';
+            }
+        });
+        
+        wavUriInput.addEventListener('input', () => {
+            if (wavUriInput.value.trim() !== '') {
+                audioFileInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

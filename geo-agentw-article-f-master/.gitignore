@@ -1,0 +1,26 @@
+# Runtime data and sensitive local state
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.pyc
+__pycache__/
+
+social-publish/db/
+social-publish/database
+social-publish/identifier.sqlite
+social-publish/cookiesFiles/
+social-publish/logs/
+social-publish/imgFiles/
+geo-agent-publish-system-master/doctor/document/
+geo-agent-publish-system-master/debug.log
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Build outputs
+target/
+dist/
+node_modules/

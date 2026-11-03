@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.domain.mapper.function.AdminCopywritingOrganizationAdminAssignmentMapper">
+
+    <select id="selectUserIdsForUpdate" resultType="java.lang.Long">
+        select user_id
+        from t_user
+        where user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        order by user_id
+        for update
+    </select>
+
+    <select id="selectActiveOrganizationAdminUserIdsForUpdate" resultType="java.lang.Long">
+        select urm.user_id
+        from t_user_role_map urm
+        inner join t_role r on r.role_id = urm.role_id
+        inner join t_user u on u.user_id = urm.user_id
+        where upper(r.name) in ('ORG_ADMIN', 'ADMIN')
+          and coalesce(u.status, 0) = 0
+          and urm.user_id in
+        <foreach collection="adminUserIds" item="adminUserId" open="(" separator="," close=")">
+            #{adminUserId}
+        </foreach>
+        order by urm.user_id, urm.id
+        for update
+    </select>
+
+    <select id="selectAdminIdsByAccountUserIdForUpdate" resultType="java.lang.Long">
+        select admin_user_id
+        from t_copywriting_organization_admin_assignment
+        where account_user_id = #{accountUserId}
+        order by admin_user_id
+        for update
+    </select>
+
+    <delete id="deleteByAccountUserId">
+        delete from t_copywriting_organization_admin_assignment
+        where account_user_id = #{accountUserId}
+    </delete>
+
+    <insert id="insertAssignments">
+        insert into t_copywriting_organization_admin_assignment
+            (account_user_id, admin_user_id, create_time, update_time)
+        values
+        <foreach collection="adminUserIds" item="adminUserId" separator=",">
+            (#{accountUserId}, #{adminUserId}, now(), now())
+        </foreach>
+    </insert>
+
+    <update id="releaseClaimedTasks">
+        update t_copywriting_approval_flow
+        set current_processor_id = null,
+            update_time = now()
+        where current_status = 3
+          and current_processor_id in
+        <foreach collection="adminUserIds" item="adminUserId" open="(" separator="," close=")">
+            #{adminUserId}
+        </foreach>
+          and copywriting_id in (
+              select copywriting_id
+              from t_copywriting
+              where user_id = #{accountUserId}
+          )
+    </update>
+
+    <select id="selectAssignmentsByAccountUserIds"
+            resultType="com.hzmwmt.domain.vo.AdminCopywritingOrganizationAdminAssignmentVO">
+        select assignment.id as id,
+               assignment.account_user_id as accountUserId,
+               account.nick_name as accountNickName,
+               assignment.admin_user_id as adminUserId,
+               admin_user.nick_name as adminNickName,
+               assignment.create_time as createTime
+        from t_copywriting_organization_admin_assignment assignment
+        left join t_user account on account.user_id = assignment.account_user_id
+        left join t_user admin_user on admin_user.user_id = assignment.admin_user_id
+        where assignment.account_user_id in
+        <foreach collection="accountUserIds" item="accountUserId" open="(" separator="," close=")">
+            #{accountUserId}
+        </foreach>
+        order by assignment.account_user_id, assignment.create_time, assignment.id
+    </select>
+
+    <select id="selectAdminOptions"
+            resultType="com.hzmwmt.domain.vo.AdminReviewOrganizationAdminOptionVO">
+        select distinct u.user_id as adminUserId,
+                        u.nick_name as adminNickName,
+                        u.phone_number as phoneNumber
+        from t_user u
+        inner join t_user_role_map urm on urm.user_id = u.user_id
+        inner join t_role r on r.role_id = urm.role_id
+        where upper(r.name) in ('ORG_ADMIN', 'ADMIN')
+          and coalesce(u.status, 0) = 0
+        <if test="keyword != null and keyword != ''">
+          and (
+              u.nick_name like concat('%', #{keyword}, '%')
+              or u.phone_number like concat('%', #{keyword}, '%')
+              or cast(u.user_id as char) like concat('%', #{keyword}, '%')
+          )
+        </if>
+        order by u.nick_name, u.user_id
+        limit #{limit}
+    </select>
+
+    <select id="selectAccountOptions" resultType="com.hzmwmt.domain.vo.AdminReviewAccountOptionVO">
+        select u.user_id as accountUserId,
+               u.nick_name as nickName,
+               u.phone_number as phoneNumber,
+               u.status as status,
+               u.create_time as createTime
+        from t_user u
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (
+                    u.nick_name like concat('%', #{keyword}, '%')
+                    or u.phone_number like concat('%', #{keyword}, '%')
+                    or cast(u.user_id as char) like concat('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+        order by u.create_time desc, u.id desc
+    </select>
+</mapper>

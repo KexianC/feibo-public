@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.DigitalImageMapper">
+
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.DigitalImage">
+        <id column="id" property="id"/>
+        <result column="digital_image_id" property="digitalImageId"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="type" property="type"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+
+    <select id="selectUserBackgroundImageListCursorPage" resultMap="BaseResultMap">
+        SELECT digital_image_id, name,url
+        FROM t_digital_image
+        <where>
+            user_id = #{userId} AND type = 0
+            <if test="lastCursorId != null">
+                AND digital_image_id &lt; #{lastCursorId}
+            </if>
+        </where>
+        ORDER BY digital_image_id DESC
+        LIMIT #{size}
+    </select>
+
+    <select id="selectUserIllustrationImageListCursorPage" resultMap="BaseResultMap">
+        SELECT digital_image_id, name,url
+        FROM t_digital_image
+        <where>
+            user_id = #{userId} AND type = 1
+            <if test="lastCursorId != null">
+                AND digital_image_id &lt; #{lastCursorId}
+            </if>
+        </where>
+        ORDER BY digital_image_id DESC
+        LIMIT #{size}
+    </select>
+
+    <select id="selectSysBackgroundImageListCursorPage" resultMap="BaseResultMap">
+        SELECT digital_image_id, name,url
+        FROM t_digital_image
+        <where>
+            user_id IS NULL AND type = 0
+            <if test="lastCursorId != null">
+                AND digital_image_id &lt; #{lastCursorId}
+            </if>
+        </where>
+        ORDER BY digital_image_id DESC
+        LIMIT #{size}
+    </select>
+
+    <select id="selectSysIllustrationImageListCursorPage" resultMap="BaseResultMap">
+        SELECT digital_image_id, name,url
+        FROM t_digital_image
+        <where>
+            user_id IS NULL AND type = 1
+            <if test="lastCursorId != null">
+                AND digital_image_id &lt; #{lastCursorId}
+            </if>
+        </where>
+        ORDER BY digital_image_id DESC
+        LIMIT #{size}
+    </select>
+
+</mapper>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>知乎登录 - 扫码登录</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        img {
+            width: 200px;
+            height: 200px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .status {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>知乎扫码登录</h2>
+    <img id="qrcode" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23eeeeee'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-size='14'%3E等待二维码...%3C/text%3E%3C/svg%3E" alt="二维码">
+    <button id="loginBtn">点击获取登录二维码</button>
+    <div class="status" id="statusMsg">未连接</div>
+</div>
+
+<script>
+    let eventSource = null; // 当前 SSE 连接实例
+
+    // 断开已有连接（如果存在）
+    function closeConnection() {
+        if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+            console.log('已关闭之前的SSE连接');
+        }
+    }
+
+    // 更新状态文本
+    function setStatus(text, isError = false) {
+        const statusDiv = document.getElementById('statusMsg');
+        statusDiv.textContent = text;
+        statusDiv.style.color = isError ? '#dc3545' : '#28a745';
+    }
+
+    // 处理接收到的消息
+    function onMessage(event) {
+        const data = event.data;
+        console.log('SSE消息:', data);
+
+        // 如果数据长度大于 100，认为是二维码数据（Base64 字符串）
+        if (data.length > 100 || data.startsWith('https://')) {
+            let base64Image = '';
+            if (data.startsWith('data:image') || data.startsWith('https://')) {
+                base64Image = data;          // 已经是完整的 Data URL
+            } else {
+                // 确保有 data:image/png;base64, 前缀
+                base64Image = 'data:'+data;
+            }
+            // 更新 img 的 src
+            const img = document.getElementById('qrcode');
+            img.src = base64Image;
+            setStatus('二维码已刷新，请使用知乎App扫码');
+        }
+        // 处理状态码
+        else if (data === '200') {
+            closeConnection();
+            alert('登录成功！');
+            setStatus('登录成功，页面即将刷新');
+            // 可选：跳转或刷新页面
+            setTimeout(() => location.reload(), 1500);
+        }
+        else if (data === '401') {
+            alert('登录失败：未授权，请重试');
+            setStatus('登录失败：未授权', true);
+            closeConnection();
+        }
+        else if (data === '402') {
+            alert('登录失败：参数错误');
+            setStatus('登录失败：参数错误', true);
+            closeConnection();
+        }
+        else if (data === '500') {
+            alert('登录失败：服务器错误');
+            setStatus('登录失败：服务器错误', true);
+            closeConnection();
+        }
+        // 其他短消息可忽略或记录
+    }
+
+    function onError(error) {
+        console.error('SSE 连接错误:', error);
+        setStatus('连接失败，请检查网络或重试', true);
+        alert('登录连接失败，请稍后重试');
+        closeConnection();
+    }
+
+    // 建立 SSE 连接
+    function startSSE() {
+        closeConnection(); // 确保只有一个连接
+
+        const baseUrl = "http://127.0.0.1:5409";
+        const url = `${baseUrl}/login?type=3&username=1234554321&userid=123`;
+
+        // 使用原生 EventSource（现代浏览器均支持）
+        // 如需兼容旧浏览器，可引入 polyfill，但这里直接用原生即可
+        try {
+            eventSource = new EventSource(url);
+        } catch (err) {
+            console.error('创建 EventSource 失败:', err);
+            alert('当前浏览器不支持 EventSource');
+            return;
+        }
+
+        eventSource.onmessage = onMessage;
+        eventSource.onerror = onError;
+
+        setStatus('正在连接服务器，等待二维码...');
+        console.log('SSE 连接已发起:', url);
+    }
+
+    // 绑定按钮事件
+    document.getElementById('loginBtn').addEventListener('click', startSSE);
+
+    // 页面关闭前主动关闭 SSE 连接（可选）
+    window.addEventListener('beforeunload', function() {
+        if (eventSource) {
+            eventSource.close();
+        }
+    });
+</script>
+</body>
+</html>

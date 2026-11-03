@@ -1,0 +1,10 @@
+# Paths present at Git HEAD but absent from the current production frontend.
+# Apply only inside the isolated release staging tree.
+feibo/src/pages/tools/GeoAgentPage.tsx
+feibo/public/geo-agent-module
+feibo/public/img/1/headbg.png
+feibo/public/img/1/login_bg.png
+feibo/public/img/1/loginbox_2.png
+feibo/public/img/1/logo_d.png
+feibo/public/img/1/rtimg.png
+feibo/public/img/1/white_logo.png

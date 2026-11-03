@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.AIFeatureTemplateMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.AIFeatureTemplate">
+        <id property="id" column="id"/>
+        <result property="aiFeatureTemplateId" column="ai_feature_template_id"/>
+        <result property="templateCode" column="template_code"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="selectAIFeatureTemplateListByAIFeatureTemplateIds" resultMap="BaseResultMap">
+        select ai_feature_template_id,template_code,name,description from t_ai_feature_template where
+        ai_feature_template_id in
+        <foreach item="item" index="index" collection="templateIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

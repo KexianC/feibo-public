@@ -1,0 +1,1 @@
+17 3,15 * * * root /usr/local/sbin/renew-feibo-certificates.sh >> /var/log/feibo-certbot-renew.log 2>&1

@@ -1,0 +1,56 @@
+package com.hzmwmt.aop;
+
+import com.hzmwmt.domain.service.example.ExampleService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+/**
+ * 日志切面测试类
+ * 用于验证OperationLog和LoginLog注解的AOP实现是否正常工作
+ * @author AI Assistant
+ * @version v1.0
+ * @Date: 2025-11-05
+ */
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+public class LogAspectTest {
+
+    @Autowired
+    private ExampleService exampleService;
+
+    /**
+     * 测试登录日志记录
+     */
+    @Test
+    public void testLoginLog() {
+        // 测试密码登录
+        exampleService.login("admin", "123456");
+        
+        // 测试验证码登录
+        exampleService.loginWithCode("13800138000", "123456");
+        
+        // 测试登录失败情况
+        exampleService.login("admin", "wrong_password");
+    }
+
+    /**
+     * 测试操作日志记录
+     */
+    @Test
+    public void testOperationLog() {
+        // 测试新增操作
+        exampleService.addData("test data");
+        
+        // 测试更新操作
+        exampleService.updateData(1L, "updated data");
+        
+        // 测试删除操作
+        exampleService.deleteData(1L);
+        
+        // 测试查询操作
+        exampleService.queryData(1L);
+    }
+}

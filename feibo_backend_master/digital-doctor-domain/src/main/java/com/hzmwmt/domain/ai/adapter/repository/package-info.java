@@ -1,0 +1,1 @@
+package com.hzmwmt.domain.ai.adapter.repository;

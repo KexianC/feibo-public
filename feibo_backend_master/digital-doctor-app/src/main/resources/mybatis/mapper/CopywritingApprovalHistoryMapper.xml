@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.CopywritingApprovalHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.CopywritingApprovalHistory">
+        <id property="copywritingApprovalHistoryId" column="copywriting_approval_history_id"/>
+        <result property="id" column="id"/>
+        <result property="copywritingApprovalFlowId" column="copywriting_approval_flow_id"/>
+        <result property="operatorId" column="operator_id"/>
+        <result property="operationStatus" column="operation_status"/>
+        <result property="comment" column="comment"/>
+        <result property="fromStatus" column="from_status"/>
+        <result property="toStatus" column="to_status"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap id="AuditRecordViewMap" type="com.hzmwmt.infrastructure.dao.po.CopywritingAuditRecordView">
+        <id property="historyDatabaseId" column="history_database_id"/>
+        <result property="copywritingApprovalHistoryId" column="copywriting_approval_history_id"/>
+        <result property="copywritingApprovalFlowId" column="copywriting_approval_flow_id"/>
+        <result property="copywritingId" column="copywriting_id"/>
+        <result property="copywritingTitle" column="copywriting_title"/>
+        <result property="operatorId" column="operator_id"/>
+        <result property="operatorName" column="operator_name"/>
+        <result property="operationStatus" column="operation_status"/>
+        <result property="comment" column="comment"/>
+        <result property="fromStatus" column="from_status"/>
+        <result property="toStatus" column="to_status"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap id="VisibleCopywritingMap" type="com.hzmwmt.infrastructure.dao.po.Copywriting">
+        <id property="copywritingId" column="copywriting_id"/>
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="copywritingCategoryId" column="copywriting_category_id"/>
+        <result property="copywritingSourceId" column="copywriting_source_id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!--
+      Visibility is deliberately based on the current account-to-reviewer
+      assignment. A prior history row or stale current_processor_id does not
+      keep full-document access after an administrator removes an assignment.
+    -->
+    <sql id="visibleCopywritingCondition">
+        and (
+            <choose>
+                <when test="allAccess">
+                    exists (
+                        select 1
+                        from t_user global_admin
+                        inner join t_user_role_map global_admin_role_map
+                            on global_admin_role_map.user_id = global_admin.user_id
+                        inner join t_role global_admin_role
+                            on global_admin_role.role_id = global_admin_role_map.role_id
+                        where global_admin.user_id = #{viewerUserId}
+                          and coalesce(global_admin.status, 0) = 0
+                          and upper(global_admin_role.name) in ('ADMIN', 'SUPER_ADMIN', 'SUPERADMIN')
+                    )
+                </when>
+                <otherwise>
+                    copywriting.user_id = #{viewerUserId}
+                    <if test="reviewExpert">
+                        or exists (
+                            select 1
+                            from t_copywriting_expert_assignment expert_assignment
+                            inner join t_user expert_user
+                                on expert_user.user_id = expert_assignment.expert_user_id
+                               and coalesce(expert_user.status, 0) = 0
+                            where expert_assignment.account_user_id = copywriting.user_id
+                              and expert_assignment.expert_user_id = #{viewerUserId}
+                              and exists (
+                                  select 1
+                                  from t_user_role_map expert_role_map
+                                  inner join t_role expert_role
+                                      on expert_role.role_id = expert_role_map.role_id
+                                  where expert_role_map.user_id = #{viewerUserId}
+                                    and upper(expert_role.name) = 'EXPERT'
+                              )
+                        )
+                    </if>
+                    <if test="reviewOrganization">
+                        or exists (
+                            select 1
+                            from t_copywriting_organization_admin_assignment organization_assignment
+                            inner join t_user organization_user
+                                on organization_user.user_id = organization_assignment.admin_user_id
+                               and coalesce(organization_user.status, 0) = 0
+                            where organization_assignment.account_user_id = copywriting.user_id
+                              and organization_assignment.admin_user_id = #{viewerUserId}
+                              and exists (
+                                  select 1
+                                  from t_user_role_map organization_role_map
+                                  inner join t_role organization_role
+                                      on organization_role.role_id = organization_role_map.role_id
+                                  where organization_role_map.user_id = #{viewerUserId}
+                                    and upper(organization_role.name) = 'ORG_ADMIN'
+                              )
+                        )
+                    </if>
+                </otherwise>
+            </choose>
+        )
+    </sql>
+
+    <sql id="auditRecordColumns">
+        history.id as history_database_id,
+        history.copywriting_approval_history_id,
+        history.copywriting_approval_flow_id,
+        approval_flow.copywriting_id,
+        copywriting.title as copywriting_title,
+        history.operator_id,
+        operator_user.nick_name as operator_name,
+        history.operation_status,
+        history.comment,
+        history.from_status,
+        history.to_status,
+        history.create_time
+    </sql>
+
+    <sql id="auditRecordJoins">
+        from t_copywriting_approval_history history
+        inner join t_copywriting_approval_flow approval_flow
+            on approval_flow.copywriting_approval_flow_id = history.copywriting_approval_flow_id
+        inner join t_copywriting copywriting
+            on copywriting.copywriting_id = approval_flow.copywriting_id
+        left join t_user operator_user
+            on operator_user.user_id = history.operator_id
+    </sql>
+
+    <sql id="auditRecordFilters">
+        where 1 = 1
+        <include refid="visibleCopywritingCondition"/>
+        <if test="copywritingId != null">
+            and copywriting.copywriting_id = #{copywritingId}
+        </if>
+        <if test="auditorStage != null">
+            <choose>
+                <when test="auditorStage == 2">
+                    and (history.from_status = #{auditorStage} or history.operator_id = 0)
+                </when>
+                <otherwise>
+                    and history.from_status = #{auditorStage}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="approved != null">
+            and history.operation_status = #{approved}
+        </if>
+    </sql>
+
+    <select id="selectApprovalHistoryListByCopywritingIds" resultMap="BaseResultMap">
+        select id,
+               copywriting_approval_history_id,
+               copywriting_approval_flow_id,
+               operator_id,
+               operation_status,
+               comment,
+               from_status,
+               to_status,
+               create_time
+        from t_copywriting_approval_history
+        where copywriting_approval_flow_id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        order by create_time asc, id asc
+    </select>
+
+    <select id="selectVisibleCopywritingById" resultMap="VisibleCopywritingMap">
+        select copywriting.id,
+               copywriting.copywriting_id,
+               copywriting.user_id,
+               copywriting.copywriting_category_id,
+               copywriting.copywriting_source_id,
+               copywriting.title,
+               copywriting.summary,
+               copywriting.content,
+               copywriting.status,
+               copywriting.create_time,
+               copywriting.update_time
+        from t_copywriting copywriting
+        where copywriting.copywriting_id = #{copywritingId}
+        <include refid="visibleCopywritingCondition"/>
+    </select>
+
+    <select id="countExpertAssignmentForCopywriting" resultType="long">
+        select count(1)
+        from t_copywriting copywriting
+        inner join t_copywriting_expert_assignment assignment
+            on assignment.account_user_id = copywriting.user_id
+        inner join t_user reviewer
+            on reviewer.user_id = assignment.expert_user_id
+           and coalesce(reviewer.status, 0) = 0
+        where copywriting.copywriting_id = #{copywritingId}
+          and assignment.expert_user_id = #{viewerUserId}
+          and exists (
+              select 1
+              from t_user_role_map role_map
+              inner join t_role role on role.role_id = role_map.role_id
+              where role_map.user_id = #{viewerUserId}
+                and upper(role.name) = 'EXPERT'
+          )
+    </select>
+
+    <select id="countOrganizationAssignmentForCopywriting" resultType="long">
+        select count(1)
+        from t_copywriting copywriting
+        inner join t_copywriting_organization_admin_assignment assignment
+            on assignment.account_user_id = copywriting.user_id
+        inner join t_user reviewer
+            on reviewer.user_id = assignment.admin_user_id
+           and coalesce(reviewer.status, 0) = 0
+        where copywriting.copywriting_id = #{copywritingId}
+          and assignment.admin_user_id = #{viewerUserId}
+          and exists (
+              select 1
+              from t_user_role_map role_map
+              inner join t_role role on role.role_id = role_map.role_id
+              where role_map.user_id = #{viewerUserId}
+                and upper(role.name) = 'ORG_ADMIN'
+          )
+    </select>
+
+    <select id="countVisibleAuditRecords" resultType="long">
+        select count(1)
+        <include refid="auditRecordJoins"/>
+        <include refid="auditRecordFilters"/>
+    </select>
+
+    <select id="selectVisibleAuditRecords" resultMap="AuditRecordViewMap">
+        select <include refid="auditRecordColumns"/>
+        <include refid="auditRecordJoins"/>
+        <include refid="auditRecordFilters"/>
+        order by history.create_time desc, history.id desc
+        limit #{offset}, #{size}
+    </select>
+
+    <select id="selectVisibleAuditRecordsByCopywritingId" resultMap="AuditRecordViewMap">
+        select <include refid="auditRecordColumns"/>
+        <include refid="auditRecordJoins"/>
+        where copywriting.copywriting_id = #{copywritingId}
+        <include refid="visibleCopywritingCondition"/>
+        order by approval_flow.create_time asc,
+                 approval_flow.id asc,
+                 history.create_time asc,
+                 history.id asc
+    </select>
+</mapper>

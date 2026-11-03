@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.AIMessageMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.AIMessage">
+        <id property="id" column="id"/>
+        <result property="aiMessageId" column="ai_message_id"/>
+        <result property="aiConversationId" column="ai_conversation_id"/>
+        <result property="role" column="role"/>
+        <result property="aiModelConfigId" column="ai_model_config_id"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectAiMessageListCursorPageByConversationIdAndUserId" resultMap="BaseResultMap">
+        SELECT m.ai_message_id, m.content, m.role, m.create_time
+        FROM t_ai_message m
+        INNER JOIN t_ai_conversation c
+                ON c.ai_conversation_id = m.ai_conversation_id
+        WHERE m.ai_conversation_id = #{aiConversationId}
+          AND c.user_id = #{userId}
+
+        <if test="lastCursorId != null">
+            AND m.ai_message_id &lt; #{lastCursorId}
+        </if>
+
+        ORDER BY m.ai_message_id DESC
+        LIMIT #{size}
+    </select>
+
+
+    <select id="selectAiMessageHistoryByConversationIdAndUserIdAndAiModelConfigId" resultMap="BaseResultMap">
+        SELECT m.content, m.role
+        FROM t_ai_message m
+        INNER JOIN t_ai_conversation c
+                ON c.ai_conversation_id = m.ai_conversation_id
+        WHERE m.ai_conversation_id = #{aiConversationId}
+          AND c.user_id = #{userId}
+
+        <if test="!isAllHistory">
+            AND m.ai_model_config_id = #{aiModelConfigId}
+        </if>
+
+    </select>
+
+
+</mapper>

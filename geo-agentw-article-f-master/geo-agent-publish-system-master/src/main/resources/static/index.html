@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识库工作台</title>
+    <style>
+        :root { --bg:#f5efe6; --panel:#fffdf9; --line:#e3ddd4; --text:#1f2d36; --muted:#6d7b85; --accent:#195d57; --accent2:#124742; --ok:#e1f1ec; --okc:#135448; --warn:#fff0dc; --warnc:#9c5f17; --err:#fde7e3; --errc:#9a382f; }
+        * { box-sizing:border-box; }
+        body { margin:0; font-family:"PingFang SC","Microsoft YaHei",sans-serif; color:var(--text); background:linear-gradient(180deg,#f7f1e7,#ede4d7); }
+        button,input,select { font:inherit; }
+        .page { min-height:100vh; padding:18px; }
+        .shell { min-height:calc(100vh - 36px); display:grid; grid-template-columns:340px 1fr; gap:18px; align-items:start; }
+        .panel { background:rgba(255,253,249,.94); border:1px solid var(--line); border-radius:28px; box-shadow:0 24px 80px rgba(34,44,53,.12); overflow:hidden; }
+        .sidebar { display:grid; grid-template-rows:auto auto auto; }
+        .main { display:grid; grid-template-rows:auto auto 1fr auto; }
+        .header { padding:24px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.35)); }
+        .badge { display:inline-flex; align-items:center; gap:8px; padding:7px 11px; border-radius:999px; font-size:12px; font-weight:700; color:var(--accent2); background:rgba(25,93,87,.1); }
+        .badge::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--accent); }
+        h1,h2,h3,p { margin:0; }
+        .title { margin-top:12px; font-size:28px; }
+        .subtitle { margin-top:10px; font-size:14px; color:var(--muted); line-height:1.7; }
+        .quick,.filters,.toolbar,.pager { padding:16px 18px; border-bottom:1px solid var(--line); }
+        .quick { display:grid; grid-template-columns:1fr 1fr; gap:10px; background:rgba(255,255,255,.35); }
+        .filters { display:grid; gap:10px; background:rgba(255,255,255,.28); }
+        .field { display:grid; gap:6px; }
+        .field label { font-size:12px; font-weight:700; color:var(--muted); }
+        .field input,.field select,.login-form input { width:100%; height:42px; padding:0 12px; border:1px solid #d8d2c8; border-radius:14px; background:#fff; color:var(--text); outline:none; }
+        .actions2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .btn { height:42px; border:none; border-radius:14px; cursor:pointer; font-weight:700; transition:.15s ease; }
+        .btn:hover { transform:translateY(-1px); }
+        .btn:disabled { opacity:.55; cursor:not-allowed; transform:none; }
+        .primary { background:var(--accent); color:#fff; }
+        .primary:hover { background:var(--accent2); }
+        .secondary { background:rgba(31,45,54,.08); color:var(--text); }
+        .ghost { background:#fff; color:var(--accent2); border:1px solid rgba(25,93,87,.14); }
+        .summary,.pager-info { color:var(--muted); font-size:12px; line-height:1.7; }
+        .toolbar { display:flex; justify-content:space-between; gap:12px; background:rgba(255,255,255,.35); }
+        .list { min-height:0; overflow:auto; padding:18px; display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); align-content:start; }
+        .card { padding:16px; border:1px solid #e2ddd5; border-radius:18px; background:rgba(255,255,255,.85); transition:.15s ease; }
+        .card:hover { border-color:rgba(25,93,87,.24); box-shadow:0 12px 30px rgba(31,44,53,.08); }
+        .meta,.pager,.footer-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .tag { display:inline-flex; align-items:center; min-height:28px; padding:0 10px; border-radius:999px; font-size:12px; font-weight:700; background:rgba(31,45,54,.06); }
+        .ok { background:var(--ok); color:var(--okc); }
+        .pending { background:var(--warn); color:var(--warnc); }
+        .failed { background:var(--err); color:var(--errc); }
+        .path,.time,.error { margin-top:10px; font-size:12px; line-height:1.7; word-break:break-all; color:var(--muted); }
+        .error { padding:10px 12px; border-radius:12px; background:rgba(154,56,47,.06); color:var(--errc); }
+        .pager { justify-content:space-between; border-bottom:none; background:rgba(255,255,255,.35); }
+        .empty { padding:28px 16px; text-align:center; color:var(--muted); line-height:1.8; }
+        .login-mask { position:fixed; inset:0; background:rgba(22,31,38,.32); opacity:0; pointer-events:none; transition:.18s ease; }
+        .login-mask.open { opacity:1; pointer-events:auto; }
+        .login-dialog { position:fixed; inset:0; display:grid; place-items:center; z-index:40; pointer-events:none; }
+        .login-dialog.open { pointer-events:auto; }
+        .login-card { width:min(420px,calc(100vw - 24px)); padding:28px; background:rgba(255,252,247,.98); border:1px solid var(--line); border-radius:28px; box-shadow:0 24px 80px rgba(34,44,53,.16); transform:translateY(12px); opacity:0; transition:.18s ease; }
+        .login-dialog.open .login-card { transform:translateY(0); opacity:1; }
+        .login-form { margin-top:18px; display:grid; gap:12px; }
+        .login-error { min-height:20px; font-size:12px; color:var(--errc); }
+        .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+        @media (max-width:960px){ .page{padding:0}.shell{min-height:100vh;grid-template-columns:1fr;gap:0}.panel{border-radius:0} }
+        @media (max-width:640px){ .quick,.actions2{grid-template-columns:1fr}.pager{flex-direction:column;align-items:stretch}.list{grid-template-columns:1fr} }
+    </style>
+</head>
+<body>
+<div class="page">
+    <main class="shell">
+        <aside class="panel sidebar">
+            <header class="header">
+                <div class="badge">知识库面板</div>
+                <h1 class="title">文档操作</h1>
+                <p class="subtitle">企业微信已经可以对话，这里只保留文档管理界面。请先登录后再执行上传、扫描和分页查询。</p>
+            </header>
+            <section class="quick">
+                <button class="btn primary" id="uploadButton" type="button">上传文档</button>
+                <button class="btn ghost" id="scanButton" type="button">扫描目录</button>
+                <input class="sr-only" id="fileInput" type="file">
+            </section>
+            <form class="filters" id="filterForm">
+                <div class="field">
+                    <label for="fileNameInput">文件名</label>
+                    <input id="fileNameInput" type="text" placeholder="支持模糊查询">
+                </div>
+                <div class="field">
+                    <label for="statusSelect">状态</label>
+                    <select id="statusSelect">
+                        <option value="">全部状态</option>
+                        <option value="0">待处理</option>
+                        <option value="1">成功</option>
+                        <option value="2">失败</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="sourceTypeSelect">来源</label>
+                    <select id="sourceTypeSelect">
+                        <option value="">全部来源</option>
+                        <option value="0">NAS</option>
+                        <option value="1">手动上传</option>
+                    </select>
+                </div>
+                <div class="actions2">
+                    <button class="btn primary" type="submit">筛选文档</button>
+                    <button class="btn secondary" id="resetFilterButton" type="button">重置条件</button>
+                </div>
+            </form>
+        </aside>
+        <section class="panel main">
+            <header class="header">
+                <div class="badge">文档列表</div>
+                <h2 class="title">知识库文件</h2>
+            </header>
+            <div class="toolbar">
+                <div class="summary" id="docSummary">正在加载文档列表...</div>
+            </div>
+            <section class="list" id="docList"></section>
+            <footer class="pager">
+                <div class="pager-info" id="pagerInfo">第 1 / 1 页</div>
+                <div class="meta">
+                    <button class="btn secondary" id="prevPageButton" type="button">上一页</button>
+                    <button class="btn secondary" id="nextPageButton" type="button">下一页</button>
+                </div>
+            </footer>
+        </section>
+    </main>
+</div>
+
+<div class="login-mask" id="loginMask"></div>
+<div class="login-dialog" id="loginDialog">
+    <div class="login-card">
+        <div class="badge">登录验证</div>
+        <h3 class="title" style="font-size:24px;">请输入管理密码</h3>
+        <p class="subtitle">登录成功后才能查看和操作文档列表。</p>
+        <form class="login-form" id="loginForm">
+            <input id="passwordInput" type="password" placeholder="请输入密码" autocomplete="current-password">
+            <button class="btn primary" id="submitLoginButton" type="submit">立即登录</button>
+            <div class="login-error" id="loginErrorText"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+const qs = (id) => document.getElementById(id);
+const docList = qs("docList"), docSummary = qs("docSummary"), pagerInfo = qs("pagerInfo");
+const prevPageButton = qs("prevPageButton"), nextPageButton = qs("nextPageButton");
+const filterForm = qs("filterForm"), resetFilterButton = qs("resetFilterButton");
+const fileNameInput = qs("fileNameInput"), statusSelect = qs("statusSelect"), sourceTypeSelect = qs("sourceTypeSelect");
+const uploadButton = qs("uploadButton"), scanButton = qs("scanButton"), fileInput = qs("fileInput");
+const loginMask = qs("loginMask"), loginDialog = qs("loginDialog"), loginForm = qs("loginForm"), passwordInput = qs("passwordInput"), submitLoginButton = qs("submitLoginButton"), loginErrorText = qs("loginErrorText");
+const state = { pageNum:1, pageSize:20, pages:0, total:0, loggedIn:false, filters:{ fileName:"", status:"", sourceType:"" } };
+let actionLoading = false;
+
+function escapeHtml(v){ return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"); }
+function fmtStatus(v){ if(v===0)return{text:"待处理",cls:"tag pending"}; if(v===1)return{text:"成功",cls:"tag ok"}; if(v===2)return{text:"失败",cls:"tag failed"}; return{text:"未知",cls:"tag"}; }
+function fmtSource(v){ if(v===0)return"NAS"; if(v===1)return"手动上传"; return"未知来源"; }
+function fmtTime(v){ return v ? String(v).replace("T"," ") : "暂无时间"; }
+function setActionLoading(v){ actionLoading = v; uploadButton.disabled = !state.loggedIn; scanButton.disabled = !state.loggedIn; }
+function showLoginModal(message){ loginErrorText.textContent = message || ""; loginMask.classList.add("open"); loginDialog.classList.add("open"); passwordInput.focus(); }
+function hideLoginModal(){ loginErrorText.textContent = ""; loginMask.classList.remove("open"); loginDialog.classList.remove("open"); passwordInput.value = ""; }
+function updateLoginUI(){
+    setActionLoading(false);
+}
+async function request(url, options){
+    const response = await fetch(url, options);
+    let result = null;
+    try { result = await response.json(); } catch (e) { result = null; }
+    if (response.status === 401 || (result && result.code === "UNAUTHORIZED")) {
+        state.loggedIn = false;
+        updateLoginUI();
+        showLoginModal("请先登录");
+        throw new Error((result && result.message) || "请先登录");
+    }
+    if (!result) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+    if (!result.success) {
+        throw new Error(result.message || "请求失败");
+    }
+    return result;
+}
+async function checkLoginStatus(){
+    const response = await fetch("/login/status");
+    const result = await response.json();
+    state.loggedIn = !!(result && result.success && result.data);
+    updateLoginUI();
+    if (!state.loggedIn) {
+        showLoginModal("");
+    }
+}
+function renderDocList(records){
+    const docs = Array.isArray(records) ? records : [];
+    if (!docs.length) {
+        docList.innerHTML = '<div class="empty">没有匹配的文档，试试调整筛选条件。</div>';
+        return;
+    }
+    docList.innerHTML = docs.map((doc) => {
+        const s = fmtStatus(doc.status);
+        const err = doc.errorMessage ? `<div class="error">失败原因：${escapeHtml(doc.errorMessage)}</div>` : "";
+        return `<article class="card">
+            <h3>${escapeHtml(doc.fileName || "未命名文档")}</h3>
+            <div class="meta">
+                <span class="${s.cls}">${s.text}</span>
+                <span class="tag">${escapeHtml(fmtSource(doc.sourceType))}</span>
+                <span class="tag">块数 ${escapeHtml(String(doc.chunkCount ?? 0))}</span>
+            </div>
+            <div class="path">${escapeHtml(doc.filePath || "暂无路径")}</div>
+            <div class="time">更新时间：${escapeHtml(fmtTime(doc.updatedTime || doc.fileUpdateTime))}</div>
+            ${err}
+        </article>`;
+    }).join("");
+}
+function updatePager(pageData){
+    state.pageNum = Number(pageData.pageNum || 1);
+    state.pageSize = Number(pageData.pageSize || 20);
+    state.pages = Number(pageData.pages || 0);
+    state.total = Number(pageData.total || 0);
+    docSummary.textContent = `共 ${state.total} 篇文档，当前展示第 ${state.pageNum} 页，每页 ${state.pageSize} 条。`;
+    pagerInfo.textContent = state.pages > 0 ? `第 ${state.pageNum} / ${state.pages} 页` : "第 1 / 1 页";
+    prevPageButton.disabled = state.pageNum <= 1;
+    nextPageButton.disabled = state.pages <= 0 || state.pageNum >= state.pages;
+}
+async function loadDocuments(){
+    if (!state.loggedIn) {
+        docSummary.textContent = "请先登录后查看文档";
+        docList.innerHTML = '<div class="empty">请先登录后查看文档列表。</div>';
+        return;
+    }
+    docSummary.textContent = "正在加载文档列表...";
+    docList.innerHTML = "";
+    const params = new URLSearchParams({ pageNum:String(state.pageNum), pageSize:String(state.pageSize) });
+    if (state.filters.fileName) params.set("fileName", state.filters.fileName);
+    if (state.filters.status !== "") params.set("status", state.filters.status);
+    if (state.filters.sourceType !== "") params.set("sourceType", state.filters.sourceType);
+    try {
+        const result = await request(`/rag/documents/page?${params.toString()}`);
+        updatePager(result);
+        renderDocList(result.data || []);
+    } catch (error) {
+        docSummary.textContent = "文档列表加载失败";
+        docList.innerHTML = `<div class="empty">加载失败，请稍后重试。<br>${escapeHtml(error.message || "未知错误")}</div>`;
+    }
+}
+async function uploadDocument(file){
+    if (!file || !state.loggedIn) return;
+    docSummary.textContent = `正在上传：${file.name}`;
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        await request("/rag/documents/file", { method:"POST", body:formData });
+        state.pageNum = 1;
+        await loadDocuments();
+    } catch (error) {
+        docSummary.textContent = `上传失败：${file.name}`;
+        alert(`上传失败，请稍后重试。\n${error.message || "未知错误"}`);
+    } finally {
+        fileInput.value = "";
+    }
+}
+async function scanDocuments(){
+    if (!state.loggedIn) return;
+    setActionLoading(true);
+    docSummary.textContent = "正在触发目录扫描，请稍候...";
+    try {
+        await request("/rag/documents/scan", { method:"POST" });
+        state.pageNum = 1;
+        await loadDocuments();
+    } catch (error) {
+        docSummary.textContent = "目录扫描失败";
+        alert(`目录扫描失败，请稍后重试。\n${error.message || "未知错误"}`);
+    }
+}
+loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const password = passwordInput.value.trim();
+    if (!password) {
+        loginErrorText.textContent = "请输入密码";
+        return;
+    }
+    submitLoginButton.disabled = true;
+    loginErrorText.textContent = "";
+    try {
+        await request(`/login?password=${encodeURIComponent(password)}`, { method:"POST" });
+        state.loggedIn = true;
+        updateLoginUI();
+        hideLoginModal();
+        await loadDocuments();
+    } catch (error) {
+        loginErrorText.textContent = error.message || "登录失败";
+    } finally {
+        submitLoginButton.disabled = false;
+    }
+});
+filterForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    state.pageNum = 1;
+    state.filters.fileName = fileNameInput.value.trim();
+    state.filters.status = statusSelect.value;
+    state.filters.sourceType = sourceTypeSelect.value;
+    loadDocuments();
+});
+resetFilterButton.addEventListener("click", () => {
+    fileNameInput.value = "";
+    statusSelect.value = "";
+    sourceTypeSelect.value = "";
+    state.pageNum = 1;
+    state.filters = { fileName:"", status:"", sourceType:"" };
+    loadDocuments();
+});
+prevPageButton.addEventListener("click", () => { if (state.pageNum > 1) { state.pageNum -= 1; loadDocuments(); } });
+nextPageButton.addEventListener("click", () => { if (state.pages <= 0 || state.pageNum < state.pages) { state.pageNum += 1; loadDocuments(); } });
+uploadButton.addEventListener("click", () => { if (state.loggedIn) fileInput.click(); });
+fileInput.addEventListener("change", () => { const file = fileInput.files && fileInput.files[0]; if (file) uploadDocument(file); });
+scanButton.addEventListener("click", scanDocuments);
+
+checkLoginStatus().then(() => {
+    if (state.loggedIn) {
+        loadDocuments();
+    } else {
+        docSummary.textContent = "请先登录后查看文档";
+        docList.innerHTML = '<div class="empty">请先登录后查看文档列表。</div>';
+    }
+});
+</script>
+</body>
+</html>

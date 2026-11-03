@@ -1,0 +1,25 @@
+spring:
+  config:
+    name: digital-doctor-app
+    import: classpath:geo-agent-integration.yml
+  profiles:
+    # Production must set SPRING_PROFILES_ACTIVE=prod explicitly. An empty
+    # default prevents a packaged service from silently starting with dev
+    # credentials and endpoints.
+    active: ${SPRING_PROFILES_ACTIVE:}
+
+app:
+  geo-integration:
+    enabled: true
+
+aliyun:
+  dashscope:
+    tts:
+      model: ${DASHSCOPE_TTS_MODEL:qwen-audio-3.0-tts-flash}
+      voice: ${DASHSCOPE_TTS_VOICE:longanfengyue}
+      max-text-length: ${DASHSCOPE_TTS_MAX_TEXT_LENGTH:600}
+      timeout-millis: ${DASHSCOPE_TTS_TIMEOUT_MILLIS:60000}
+      max-concurrency: ${DASHSCOPE_TTS_MAX_CONCURRENCY:8}
+      user-max-requests: ${DASHSCOPE_TTS_USER_MAX_REQUESTS:30}
+      user-max-characters: ${DASHSCOPE_TTS_USER_MAX_CHARACTERS:12000}
+      usage-window-millis: ${DASHSCOPE_TTS_USAGE_WINDOW_MILLIS:60000}

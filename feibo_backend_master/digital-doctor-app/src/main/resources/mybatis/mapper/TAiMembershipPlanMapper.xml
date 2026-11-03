@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.AIMembershipPlanMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.AIMembershipPlan">
+        <id property="id" column="id"/>
+        <result property="aiMembershipPlanId" column="ai_membership_plan_id"/>
+        <result property="planCode" column="plan_code"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="durationDays" column="duration_days"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="selectValidMembershipPlan" resultMap="BaseResultMap">
+        select ai_membership_plan_id, plan_code, name, price, duration_days
+        from t_ai_membership_plan
+        where is_active = 0
+        order by id;
+    </select>
+    <select id="selectValidMembershipPlanByAiMembershipPlanId" resultMap="BaseResultMap">
+        select ai_membership_plan_id, plan_code, name, price, duration_days
+        from t_ai_membership_plan
+        where ai_membership_plan_id = #{aiMembershipPlanId}
+          and is_active = 0
+    </select>
+    <select id="selectValidMembershipPlanByAiMembershipPlanIds" resultMap="BaseResultMap">
+        select ai_membership_plan_id,plan_code,name,price,duration_days from t_ai_membership_plan
+        where ai_membership_plan_id in
+        <foreach item="item" index="index" collection="aiMembershipPlanIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and is_active = 0
+    </select>
+    <select id="selectDefaultAiMembershipPlan" resultMap="BaseResultMap">
+        select ai_membership_plan_id, plan_code, name, price, duration_days
+        from t_ai_membership_plan
+        where is_active = 0
+          and plan_code = 'PLAN_FREE'
+    </select>
+</mapper>

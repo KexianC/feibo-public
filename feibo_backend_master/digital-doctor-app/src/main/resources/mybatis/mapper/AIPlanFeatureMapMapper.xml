@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.AIPlanFeatureMapMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.AIPlanFeatureMap">
+        <result property="aiMembershipPlanId" column="ai_membership_plan_id"/>
+        <result property="aiFeatureId" column="ai_feature_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <select id="selectAiPlanFeatureMapListByMembershipPlanIds" resultMap="BaseResultMap">
+        select ai_membership_plan_id ,ai_feature_id from t_ai_plan_feature_map where ai_membership_plan_id in
+        <foreach item="item" index="index" collection="membershipPlanIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectAiFeatureIdsByMembershipPlanId" resultType="java.lang.Long">
+        select ai_feature_id
+        from t_ai_plan_feature_map
+        where ai_membership_plan_id = #{aiMembershipPlanId}
+    </select>
+</mapper>

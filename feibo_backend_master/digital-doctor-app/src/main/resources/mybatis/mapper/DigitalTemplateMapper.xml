@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.DigitalTemplateMapper">
+
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.DigitalTemplate">
+        <id property="id" column="id"/>
+        <result property="digitalTemplateId" column="digital_template_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="body" column="body"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="selectUserTemplateListCursorPage" resultMap="BaseResultMap">
+        select digital_template_id,title,body,create_time from t_digital_template
+        <where>
+            user_id=#{userId}
+            <if test="lastCursorId != null">
+                AND digital_template_id &lt; #{lastCursorId}
+            </if>
+        </where>
+        ORDER BY digital_template_id DESC
+        LIMIT #{size}
+    </select>
+
+    <select id="selectSysTemplateListCursorPage" resultMap="BaseResultMap">
+        select digital_template_id,title,body,create_time from t_digital_template
+        <where>
+            user_id IS NULL
+            <if test="lastCursorId != null">
+                AND digital_template_id &lt; #{lastCursorId}
+            </if>
+        </where>
+        ORDER BY digital_template_id DESC
+        LIMIT #{size}
+    </select>
+
+</mapper>

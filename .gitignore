@@ -1,0 +1,83 @@
+# Preserved metadata from the former nested repositories.
+**/.git.nested-backup/
+
+# Local toolchains and dependency/build outputs.
+**/.local-tools/
+**/.venv/
+**/node_modules/
+**/target/
+**/bin/
+*.class
+**/dist/
+**/dist-ssr/
+**/.vite/
+**/.npm-cache/
+
+# Local Codex security-review staging data.
+.stage-*/
+.logo-staging/
+.writeup-staging/
+.codex-writeup-staging/
+_docx_rework/
+soffice_convert_*/
+soffice_profile_*/
+.agents/
+
+# Local release candidates and isolated build artifacts. Production release
+# identities are recorded in ops/RELEASE_RETENTION.md.
+/release/
+
+# Runtime state and logs.
+**/logs/
+**/__pycache__/
+*.pyc
+*.log
+*.pid
+*.db
+*.sqlite
+*.sqlite3
+**/cookiesFiles/
+**/doctor/document/
+
+# Machine-local configuration and IDE metadata.
+.env
+.env.*
+!.env.example
+**/.local-config
+*.local
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Public source checkout: local state, data exports and generated bundles.
+/tmp*/
+/.tmp/
+/.codex*/
+/.playwright-cli/
+/output/
+/outputs/
+**/output/
+**/outputs/
+**/.trae/
+**/.qwen/
+**/backups/
+**/generated_knowledge_docs/
+**/*.tsbuildinfo
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.dump
+*.sql.gz
+**/dump-*.sql
+/feibo_backend/public/geo-agent-app/
+/feibo/public/geo-agent-module/
+/geo-agentw-article-f-master/geo-agent-publish-system-master/META-INF/
+/geo-agentw-article-f-master/social-publish/publish_failed.png
+
+# Application log screens are source, not runtime logs.
+!**/src/**/logs/
+!**/src/**/logs/**

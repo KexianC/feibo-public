@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.PushMessageMapper">
+
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.PushMessage">
+        <id property="id" column="id"/>
+        <result property="pushMessageId" column="push_message_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="sendTime" column="send_time"/>
+    </resultMap>
+    <update id="updatePushMessage2Read">
+        update t_push_message
+        set status= true,
+            send_time=now()
+        where push_message_id = #{pushMessageId}
+    </update>
+    <select id="selectUnreadListByUserId" resultMap="BaseResultMap">
+        select push_message_id, user_id, content, title, create_time
+        from t_push_message
+        where user_id = #{userId}
+          and status = false
+    </select>
+    <select id="selectReadListCursorPageByUserId" resultMap="BaseResultMap">
+        select push_message_id,user_id,content,send_time from t_push_message
+        where user_id= #{userId} and status=true
+        <if test="lastCursorId != null">
+            and push_message_id &lt; #{lastCursorId}
+        </if>
+        order by push_message_id desc
+        limit #{size}
+    </select>
+
+</mapper>

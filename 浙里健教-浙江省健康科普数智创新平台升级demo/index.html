@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="浙里健教-浙江省健康科普数智创新平台">
+  <meta name="theme-color" content="#0f766e">
+  <title>浙里健教-浙江省健康科普数智创新平台</title>
+  <link rel="icon" href="./assets/tiantian.png">
+  <link rel="stylesheet" href="./assets/app.css">
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-landmark" viewBox="0 0 24 24">
+      <path d="M10 18v-7"></path>
+      <path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"></path>
+      <path d="M14 18v-7"></path>
+      <path d="M18 18v-7"></path>
+      <path d="M3 22h18"></path>
+      <path d="M6 18v-7"></path>
+    </symbol>
+    <symbol id="i-building-2" viewBox="0 0 24 24">
+      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path>
+      <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path>
+      <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path>
+      <path d="M10 6h4"></path>
+      <path d="M10 10h4"></path>
+      <path d="M10 14h4"></path>
+      <path d="M10 18h4"></path>
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24">
+      <path d="m6 9 6 6 6-6"></path>
+    </symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24">
+      <path d="m15 18-6-6 6-6"></path>
+    </symbol>
+    <symbol id="i-layout-dashboard" viewBox="0 0 24 24">
+      <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+      <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+      <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+      <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+    </symbol>
+    <symbol id="i-database" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+      <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
+      <path d="M3 12A9 3 0 0 0 21 12"></path>
+    </symbol>
+    <symbol id="i-wand-sparkles" viewBox="0 0 24 24">
+      <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"></path>
+      <path d="m14 7 3 3"></path>
+      <path d="M5 6v4"></path>
+      <path d="M19 14v4"></path>
+      <path d="M10 2v2"></path>
+      <path d="M7 8H3"></path>
+      <path d="M21 16h-4"></path>
+      <path d="M11 3H9"></path>
+    </symbol>
+    <symbol id="i-images" viewBox="0 0 24 24">
+      <path d="M18 22H4a2 2 0 0 1-2-2V6"></path>
+      <path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18"></path>
+      <circle cx="12" cy="8" r="2"></circle>
+      <rect width="16" height="16" x="6" y="2" rx="2"></rect>
+    </symbol>
+    <symbol id="i-users-round" viewBox="0 0 24 24">
+      <path d="M18 21a8 8 0 0 0-16 0"></path>
+      <circle cx="10" cy="8" r="5"></circle>
+      <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"></path>
+    </symbol>
+    <symbol id="i-bot" viewBox="0 0 24 24">
+      <path d="M12 8V4H8"></path>
+      <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+      <path d="M2 14h2"></path>
+      <path d="M20 14h2"></path>
+      <path d="M15 13v2"></path>
+      <path d="M9 13v2"></path>
+    </symbol>
+    <symbol id="i-chart-no-axes-combined" viewBox="0 0 24 24">
+      <path d="M12 16v5"></path>
+      <path d="M16 14v7"></path>
+      <path d="M20 10v11"></path>
+      <path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"></path>
+      <path d="M4 18v3"></path>
+      <path d="M8 14v7"></path>
+    </symbol>
+    <symbol id="i-shield-check" viewBox="0 0 24 24">
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+      <path d="m9 12 2 2 4-4"></path>
+    </symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24">
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </symbol>
+    <symbol id="i-circle-check" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="m9 12 2 2 4-4"></path>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24">
+      <path d="M4 12h16"></path>
+      <path d="M4 18h16"></path>
+      <path d="M4 6h16"></path>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <path d="m21 21-4.34-4.34"></path>
+      <circle cx="11" cy="11" r="8"></circle>
+    </symbol>
+    <symbol id="i-clipboard-check" viewBox="0 0 24 24">
+      <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+      <path d="m9 14 2 2 4-4"></path>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24">
+      <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+      <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path>
+    </symbol>
+    <symbol id="i-maximize-2" viewBox="0 0 24 24">
+      <path d="M15 3h6v6"></path>
+      <path d="m21 3-7 7"></path>
+      <path d="m3 21 7-7"></path>
+      <path d="M9 21H3v-6"></path>
+    </symbol>
+    <symbol id="i-user-round" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="5"></circle>
+      <path d="M20 21a8 8 0 0 0-16 0"></path>
+    </symbol>
+    <symbol id="i-radio-tower" viewBox="0 0 24 24">
+      <path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path>
+      <path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path>
+      <circle cx="12" cy="9" r="2"></circle>
+      <path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path>
+      <path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path>
+      <path d="M9.5 18h5"></path>
+      <path d="m8 22 4-11 4 11"></path>
+    </symbol>
+    <symbol id="i-cloud-upload" viewBox="0 0 24 24">
+      <path d="M12 13v8"></path>
+      <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+      <path d="m8 17 4-4 4 4"></path>
+    </symbol>
+    <symbol id="i-calendar-plus" viewBox="0 0 24 24">
+      <path d="M16 19h6"></path>
+      <path d="M16 2v4"></path>
+      <path d="M19 16v6"></path>
+      <path d="M21 12.598V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8.5"></path>
+      <path d="M3 10h18"></path>
+      <path d="M8 2v4"></path>
+    </symbol>
+    <symbol id="i-file-check-2" viewBox="0 0 24 24">
+      <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"></path>
+      <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+      <path d="m3 15 2 2 4-4"></path>
+    </symbol>
+    <symbol id="i-message-circle-heart" viewBox="0 0 24 24">
+      <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+      <path d="M15.8 9.2a2.5 2.5 0 0 0-3.5 0l-.3.4-.35-.3a2.42 2.42 0 1 0-3.2 3.6l3.6 3.5 3.6-3.5c1.2-1.2 1.1-2.7.2-3.7"></path>
+    </symbol>
+    <symbol id="i-chart-column" viewBox="0 0 24 24">
+      <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+      <path d="M18 17V9"></path>
+      <path d="M13 17V5"></path>
+      <path d="M8 17v-3"></path>
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24">
+      <path d="M5 12h14"></path>
+      <path d="m12 5 7 7-7 7"></path>
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24">
+      <path d="M5 12h14"></path>
+      <path d="M12 5v14"></path>
+    </symbol>
+    <symbol id="i-loader-circle" viewBox="0 0 24 24">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+    </symbol>
+    <symbol id="i-panel-top" viewBox="0 0 24 24">
+      <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+      <path d="M3 9h18"></path>
+    </symbol>
+    <symbol id="i-circle-help" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+      <path d="M12 17h.01"></path>
+    </symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24">
+      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
+      <path d="M20 3v4"></path>
+      <path d="M22 5h-4"></path>
+      <path d="M4 17v2"></path>
+      <path d="M5 18H3"></path>
+    </symbol>
+    <symbol id="i-history" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+      <path d="M3 3v5h5"></path>
+      <path d="M12 7v5l4 2"></path>
+    </symbol>
+    <symbol id="i-refresh-cw" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+      <path d="M21 3v5h-5"></path>
+      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+      <path d="M8 16H3v5"></path>
+    </symbol>
+    <symbol id="i-message-square-text" viewBox="0 0 24 24">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      <path d="M13 8H7"></path>
+      <path d="M17 12H7"></path>
+    </symbol>
+    <symbol id="i-user-pen" viewBox="0 0 24 24">
+      <path d="M11.5 15H7a4 4 0 0 0-4 4v2"></path>
+      <path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"></path>
+      <circle cx="10" cy="7" r="4"></circle>
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M12 15V3"></path>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+      <path d="m7 10 5 5 5-5"></path>
+    </symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7"></path>
+      <path d="M12 19V5"></path>
+    </symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24">
+      <path d="m9 18 6-6-6-6"></path>
+    </symbol>
+    <symbol id="i-folder-open" viewBox="0 0 24 24">
+      <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path>
+    </symbol>
+    <symbol id="i-layout-template" viewBox="0 0 24 24">
+      <rect width="18" height="7" x="3" y="3" rx="1"></rect>
+      <rect width="9" height="7" x="3" y="14" rx="1"></rect>
+      <rect width="5" height="7" x="16" y="14" rx="1"></rect>
+    </symbol>
+    <symbol id="i-send" viewBox="0 0 24 24">
+      <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
+      <path d="m21.854 2.147-10.94 10.939"></path>
+    </symbol>
+    <symbol id="i-square-play" viewBox="0 0 24 24">
+      <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+      <path d="m9 8 6 4-6 4Z"></path>
+    </symbol>
+    <symbol id="i-type" viewBox="0 0 24 24">
+      <path d="M12 4v16"></path>
+      <path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"></path>
+      <path d="M9 20h6"></path>
+    </symbol>
+    <symbol id="i-audio-waveform" viewBox="0 0 24 24">
+      <path d="M2 13a2 2 0 0 0 2-2V7a2 2 0 0 1 4 0v13a2 2 0 0 0 4 0V4a2 2 0 0 1 4 0v13a2 2 0 0 0 4 0v-4a2 2 0 0 1 2-2"></path>
+    </symbol>
+    <symbol id="i-undo-2" viewBox="0 0 24 24">
+      <path d="M9 14 4 9l5-5"></path>
+      <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"></path>
+    </symbol>
+    <symbol id="i-redo-2" viewBox="0 0 24 24">
+      <path d="m15 14 5-5-5-5"></path>
+      <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"></path>
+    </symbol>
+    <symbol id="i-circle-minus" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M8 12h8"></path>
+    </symbol>
+    <symbol id="i-grid-2x2" viewBox="0 0 24 24">
+      <path d="M12 3v18"></path>
+      <path d="M3 12h18"></path>
+      <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+    </symbol>
+    <symbol id="i-list" viewBox="0 0 24 24">
+      <path d="M3 12h.01"></path>
+      <path d="M3 18h.01"></path>
+      <path d="M3 6h.01"></path>
+      <path d="M8 12h13"></path>
+      <path d="M8 18h13"></path>
+      <path d="M8 6h13"></path>
+    </symbol>
+    <symbol id="i-circle-play" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polygon points="10 8 16 12 10 16 10 8"></polygon>
+    </symbol>
+    <symbol id="i-file-heart" viewBox="0 0 24 24">
+      <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v2"></path>
+      <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+      <path d="M10.29 10.7a2.43 2.43 0 0 0-2.66-.52c-.29.12-.56.3-.78.53l-.35.34-.35-.34a2.43 2.43 0 0 0-2.65-.53c-.3.12-.56.3-.79.53-.95.94-1 2.53.2 3.74L6.5 18l3.6-3.55c1.2-1.21 1.14-2.8.19-3.74Z"></path>
+    </symbol>
+    <symbol id="i-audio-lines" viewBox="0 0 24 24">
+      <path d="M2 10v3"></path>
+      <path d="M6 6v11"></path>
+      <path d="M10 3v18"></path>
+      <path d="M14 8v7"></path>
+      <path d="M18 5v13"></path>
+      <path d="M22 10v3"></path>
+    </symbol>
+    <symbol id="i-badge-check" viewBox="0 0 24 24">
+      <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path>
+      <path d="m9 12 2 2 4-4"></path>
+    </symbol>
+    <symbol id="i-calendar-check" viewBox="0 0 24 24">
+      <path d="M8 2v4"></path>
+      <path d="M16 2v4"></path>
+      <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+      <path d="M3 10h18"></path>
+      <path d="m9 16 2 2 4-4"></path>
+    </symbol>
+    <symbol id="i-presentation" viewBox="0 0 24 24">
+      <path d="M2 3h20"></path>
+      <path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"></path>
+      <path d="m7 21 5-5 5 5"></path>
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 24 24">
+      <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+    </symbol>
+    <symbol id="i-message-circle-question" viewBox="0 0 24 24">
+      <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+      <path d="M12 17h.01"></path>
+    </symbol>
+    <symbol id="i-book-open-check" viewBox="0 0 24 24">
+      <path d="M12 21V7"></path>
+      <path d="m16 12 2 2 4-4"></path>
+      <path d="M22 6V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4 4 4 0 0 0-4-4H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6a1 1 0 0 0 1-1v-1.3"></path>
+    </symbol>
+    <symbol id="i-map-pin" viewBox="0 0 24 24">
+      <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+      <circle cx="12" cy="10" r="3"></circle>
+    </symbol>
+    <symbol id="i-headset" viewBox="0 0 24 24">
+      <path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"></path>
+      <path d="M21 16v2a4 4 0 0 1-4 4h-5"></path>
+    </symbol>
+    <symbol id="i-trending-up" viewBox="0 0 24 24">
+      <path d="M16 7h6v6"></path>
+      <path d="m22 7-8.5 8.5-5-5L2 17"></path>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18"></path>
+      <path d="m6 6 12 12"></path>
+    </symbol>
+    <symbol id="i-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+      <path d="M12 9v4"></path>
+      <path d="M12 17h.01"></path>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M12 16v-4"></path>
+      <path d="M12 8h.01"></path>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M20 6 9 17l-5-5"></path>
+    </symbol>
+    <symbol id="i-corner-down-left" viewBox="0 0 24 24">
+      <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+      <path d="m9 10-5 5 5 5"></path>
+    </symbol>
+    <symbol id="i-file-spreadsheet" viewBox="0 0 24 24">
+      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+      <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+      <path d="M8 13h2"></path>
+      <path d="M14 13h2"></path>
+      <path d="M8 17h2"></path>
+      <path d="M14 17h2"></path>
+    </symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24">
+      <path d="M12 3v12"></path>
+      <path d="m17 8-5-5-5 5"></path>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+    </symbol>
+    <symbol id="i-stethoscope" viewBox="0 0 24 24">
+      <path d="M11 2v2"></path>
+      <path d="M5 2v2"></path>
+      <path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"></path>
+      <path d="M8 15a6 6 0 0 0 12 0v-3"></path>
+      <circle cx="20" cy="10" r="2"></circle>
+    </symbol>
+    <symbol id="i-quote" viewBox="0 0 24 24">
+      <path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path>
+      <path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path>
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24">
+      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24">
+      <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
+      <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
+      <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path>
+    </symbol>
+    <symbol id="i-volume-2" viewBox="0 0 24 24">
+      <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path>
+      <path d="M16 9a5 5 0 0 1 0 6"></path>
+      <path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path>
+    </symbol>
+    <symbol id="i-image" viewBox="0 0 24 24">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+      <circle cx="9" cy="9" r="2"></circle>
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+    </symbol>
+    <symbol id="i-video" viewBox="0 0 24 24">
+      <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"></path>
+      <rect x="2" y="6" width="14" height="12" rx="2"></rect>
+    </symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24">
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+      <line x1="12" x2="12" y1="19" y2="22"></line>
+    </symbol>
+    <symbol id="i-heart-pulse" viewBox="0 0 24 24">
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+      <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"></path>
+    </symbol>
+    <symbol id="i-user-check" viewBox="0 0 24 24">
+      <path d="m16 11 2 2 4-4"></path>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+    </symbol>
+    <symbol id="i-tags" viewBox="0 0 24 24">
+      <path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"></path>
+      <path d="M9.586 5.586A2 2 0 0 0 8.172 5H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414L8.29 18.29a2.426 2.426 0 0 0 3.42 0l3.58-3.58a2.426 2.426 0 0 0 0-3.42z"></path>
+      <circle cx="6.5" cy="9.5" r=".5" fill="currentColor"></circle>
+    </symbol>
+  </svg>
+  <div class="app-shell" id="appShell">
+    <aside class="main-sidebar" aria-label="系统导航">
+      <div class="system-brand" data-route-target="overview" role="button" tabindex="0" aria-label="返回综合工作台">
+        <div class="brand-mark"><svg class="ui-icon" aria-hidden="true"><use href="#i-landmark"></use></svg></div>
+        <div class="brand-copy">
+          <strong>浙里健教-浙江省健康科普数智创新平台</strong>
+        </div>
+      </div>
+
+      <button class="tenant-switcher" id="tenantSwitcher" aria-label="切换当前组织">
+        <span class="tenant-emblem"><svg class="ui-icon" aria-hidden="true"><use href="#i-building-2"></use></svg></span>
+        <div><small>当前组织</small><b>浙江省疾病预防控制中心</b></div>
+        <i><svg class="ui-icon" aria-hidden="true"><use href="#i-chevron-down"></use></svg></i>
+      </button>
+
+      <nav class="main-nav">
+        <button class="nav-item active" data-route="overview"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-layout-dashboard"></use></svg></span><span><b>综合工作台</b><small>全局态势与协同待办</small></span></button>
+        <button class="nav-item" data-route="analytics"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-chart-no-axes-combined"></use></svg></span><span><b>健康素养监测</b><small>清洗 · 分析 · 决策反哺</small></span></button>
+        <button class="nav-item" data-route="corpus"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-database"></use></svg></span><span><b>科普语料库</b><small>采集 · 加工 · 人工复核</small></span></button>
+        <button class="nav-item" data-route="creation"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-wand-sparkles"></use></svg></span><span><b>内容智能创作</b><small>浙里健教创作与审核流程</small></span></button>
+        <button class="nav-item" data-route="media"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-images"></use></svg></span><span><b>多媒体资源</b><small>资产沉淀与一键分发</small></span></button>
+        <button class="nav-item" data-route="experts"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-users-round"></use></svg></span><span><b>健康科普专家库</b><small>预约与活动全过程管理</small></span></button>
+        <button class="nav-item" data-route="tiantian"><span class="nav-icon tiantian-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-bot"></use></svg></span><span><b>“天天”智能问答</b><small>可信知识与双向服务</small></span></button>
+      </nav>
+
+      <div class="nav-section-title">平台治理</div>
+      <nav class="utility-nav">
+        <button id="auditCenterBtn"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-shield-check"></use></svg></span><b>操作审计</b></button>
+        <button id="systemSettingsBtn"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-settings"></use></svg></span><b>系统设置</b></button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="version-line"><span>SaaS 1.0.0</span><span>浙江省</span></div>
+      </div>
+    </aside>
+
+    <main class="main-stage">
+      <header class="main-topbar">
+        <div class="breadcrumb-wrap">
+          <button class="mobile-menu" id="mobileMenu" aria-label="展开导航"><svg class="ui-icon" aria-hidden="true"><use href="#i-menu"></use></svg></button>
+          <div>
+            <div class="eyebrow">浙里健教-浙江省健康科普数智创新平台</div>
+            <div class="breadcrumb"><span>综合工作台</span><i>/</i><b id="currentPageName">系统总览</b></div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="global-search-trigger" id="globalSearchBtn"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg></span><b>搜索语料、资源、专家、任务</b><kbd>Ctrl K</kbd></button>
+          <button class="icon-action counter-action" id="workQueueBtn" title="待办中心" aria-label="待办中心"><svg class="ui-icon" aria-hidden="true"><use href="#i-clipboard-check"></use></svg><em class="hidden"></em></button>
+          <button class="icon-action counter-action" id="notificationBtn" title="消息中心" aria-label="消息中心"><svg class="ui-icon" aria-hidden="true"><use href="#i-bell"></use></svg><em class="hidden"></em></button>
+          <button class="icon-action" id="fullscreenBtn" title="切换全屏" aria-label="切换全屏"><svg class="ui-icon" aria-hidden="true"><use href="#i-maximize-2"></use></svg></button>
+          <button class="avatar-action" id="userMenuBtn"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-user-round"></use></svg></span><div><b>管理员</b><small>省级运营管理员</small></div><i><svg class="ui-icon" aria-hidden="true"><use href="#i-chevron-down"></use></svg></i></button>
+        </div>
+      </header>
+
+      <div class="view-stack" id="viewStack">
+        <!-- 综合工作台 -->
+        <section class="page-view active" data-view="overview">
+          <section class="workbench-header">
+            <div class="workbench-greeting"><span class="section-kicker">PROVINCIAL OPERATIONS WORKBENCH</span><h1>下午好，管理员</h1><p>今日共有 <b>17 项待办</b>，其中 8 项为高优先级。请优先处理即将超时的语料复核与专家审核任务。</p></div>
+            <div class="workbench-context"><span><small>当前管理范围</small><b>浙江省疾病预防控制中心 · 全省</b></span><span><small>当前角色</small><b>省级运营管理员</b></span></div>
+            <div class="quick-actions"><button data-route-target="corpus"><i><svg class="ui-icon" aria-hidden="true"><use href="#i-radio-tower"></use></svg></i><span><b>新建采集任务</b><small>配置权威来源与关键词</small></span></button><button data-route-target="creation"><i><svg class="ui-icon" aria-hidden="true"><use href="#i-wand-sparkles"></use></svg></i><span><b>创建科普内容</b><small>调用浙里健教智能创作能力</small></span></button><button data-route-target="media"><i><svg class="ui-icon" aria-hidden="true"><use href="#i-cloud-upload"></use></svg></i><span><b>上传多媒体资源</b><small>统一标引并提交审核</small></span></button><button data-route-target="experts"><i><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar-plus"></use></svg></i><span><b>发起专家预约</b><small>创建基层科普活动</small></span></button></div>
+          </section>
+
+          <div class="section-heading compact-heading"><div><span class="section-kicker">SYSTEM SNAPSHOT</span><h2>全省健康科普服务态势</h2></div><p id="overviewDataTime">数据更新时间：2026-07-16 15:42</p></div>
+          <div class="metric-grid six-metrics">
+            <article class="metric-card"><span class="metric-symbol teal"><svg class="ui-icon" aria-hidden="true"><use href="#i-database"></use></svg></span><div><small>权威语料条目</small><strong data-counter="12680">12,680</strong><em>覆盖 68 个常见病种</em></div></article>
+            <article class="metric-card"><span class="metric-symbol cyan"><svg class="ui-icon" aria-hidden="true"><use href="#i-file-check-2"></use></svg></span><div><small>待人工复核</small><strong data-counter="36">36</strong><em>机器处理后进入二审</em></div></article>
+            <article class="metric-card"><span class="metric-symbol blue"><svg class="ui-icon" aria-hidden="true"><use href="#i-images"></use></svg></span><div><small>多媒体资源</small><strong data-counter="2416">2,416</strong><em>图文 / 视频 / 音频</em></div></article>
+            <article class="metric-card"><span class="metric-symbol violet"><svg class="ui-icon" aria-hidden="true"><use href="#i-users-round"></use></svg></span><div><small>健康科普专家库成员</small><strong data-counter="2351">2,351</strong><em>覆盖 24 个健康科普分库</em></div></article>
+            <article class="metric-card"><span class="metric-symbol orange"><svg class="ui-icon" aria-hidden="true"><use href="#i-message-circle-heart"></use></svg></span><div><small>今日智能问答</small><strong data-counter="1284">1,284</strong><em>平均响应 1.8 秒</em></div></article>
+            <article class="metric-card"><span class="metric-symbol green"><svg class="ui-icon" aria-hidden="true"><use href="#i-chart-column"></use></svg></span><div><small>健康素养样本</small><strong data-counter="8600">8,600</strong><em>已完成质量校验</em></div></article>
+          </div>
+
+          <div class="overview-bottom-grid">
+            <section class="surface-card closure-card">
+              <div class="card-head"><div><span class="section-kicker">END-TO-END LOOP</span><h3>重点专题全生命周期</h3></div><span class="case-label">高血压长期用药安全专题</span></div>
+              <div class="closure-flow">
+                <button data-route-target="analytics"><i>01</i><b>监测研判</b><span>发现与选题</span></button><em><svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></em>
+                <button data-route-target="corpus"><i>02</i><b>可信语料</b><span>采集与复核</span></button><em><svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></em>
+                <button data-route-target="creation"><i>03</i><b>智能创作</b><span>生成与质控</span></button><em><svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></em>
+                <button data-route-target="media"><i>04</i><b>资源沉淀</b><span>标引与复用</span></button><em><svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></em>
+                <button data-route-target="experts"><i>05</i><b>专家下沉</b><span>活动全过程</span></button><em><svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></em>
+                <button data-route-target="tiantian"><i>06</i><b>公众服务</b><span>问答与反馈</span></button>
+              </div>
+              <div class="closure-summary"><span>监测研判</span><i></i><span>精准选题</span><i></i><span>规范生产</span><i></i><span>服务反馈</span></div>
+            </section>
+            <section class="surface-card work-queue-card">
+              <div class="card-head"><div><span class="section-kicker">MY WORK QUEUE</span><h3>今日待办</h3></div><button class="text-btn" id="viewAllTasks">查看全部</button></div>
+              <ol class="work-queue-list">
+                <li><b>36</b><span><strong>语料待人工复核</strong><small>其中 8 条将在今日超时</small></span><button data-route-target="corpus">去处理</button></li>
+                <li><b>8</b><span><strong>科普内容待专家审核</strong><small>心血管专题优先级较高</small></span><button data-route-target="creation">去处理</button></li>
+                <li><b>6</b><span><strong>基层讲座预约待确认</strong><small>最近一场为 7 月 18 日</small></span><button data-route-target="experts">去处理</button></li>
+              </ol>
+            </section>
+          </div>
+        </section>
+
+        <!-- 语料库 -->
+        <section class="page-view" data-view="corpus">
+          <div class="page-heading">
+            <div><span class="section-kicker">01 · TRUSTED CORPUS</span><h1>健康教育科普语料库</h1><p>自动采集、智能排重与标引、人工二次审核，构建权威、规范、可追溯的健康科普知识底座。</p></div>
+            <div class="heading-actions"><button class="primary-btn button-with-icon" id="startCollection"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg>新建采集任务</button></div>
+          </div>
+          <nav class="module-tabs" data-module="corpus"><button class="active">语料资产</button><button>采集任务 <em>3</em></button><button>复核队列 <em>36</em></button><button>来源管理</button><button>标签字典</button></nav>
+
+          <div class="metric-grid four-metrics">
+            <article class="mini-stat"><span>今日新增</span><strong id="todayCorpusCount">186</strong><small>条有效语料</small></article>
+            <article class="mini-stat"><span>智能排重</span><strong>97.4%</strong><small>综合处理准确率</small></article>
+            <article class="mini-stat"><span>已覆盖病种</span><strong>68</strong><small>个常见病种</small></article>
+            <article class="mini-stat warning"><span>待人工复核</span><strong id="reviewQueueCount">36</strong><small>条进入二审队列</small></article>
+          </div>
+
+          <div class="corpus-layout">
+            <section class="surface-card corpus-main">
+              <div class="card-head toolbar-head"><div><span class="section-kicker">CORPUS ASSETS</span><h3>语料资产检索</h3></div><div class="toolbar"><label class="search-box"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg></span><input id="corpusSearch" placeholder="检索标题、病种、标签"></label><select id="corpusSource"><option value="all">全部来源</option><option value="国家级">国家级</option><option value="省级">省级</option><option value="学术">学术文献</option></select></div></div>
+              <div class="filter-chips" id="corpusTags"><button class="active" data-filter="all">全部语料</button><button data-filter="高血压">高血压</button><button data-filter="糖尿病">糖尿病</button><button data-filter="呼吸健康">呼吸健康</button><button data-filter="妇幼健康">妇幼健康</button><button data-filter="老年健康">老年健康</button></div>
+              <div class="corpus-table table-shell">
+                <div class="table-row table-header"><span>语料标题</span><span>来源层级</span><span>智能标签</span><span>质控状态</span><span>更新时间</span><span>操作</span></div>
+                <div class="table-row corpus-row" data-tag="高血压 老年健康" data-source="国家级"><span><b>血压正常后，降压药可以自己停吗？</b><small>慢病用药安全科普条目 · ZJHE-C-00862</small></span><span><i class="source-dot national"></i>国家级</span><span><em class="tag">高血压</em><em class="tag">用药安全</em></span><span><i class="status approved">已复核</i></span><span>2026-07-16</span><span><button class="text-btn inspect-corpus">查看</button></span></div>
+                <div class="table-row corpus-row" data-tag="糖尿病 老年健康" data-source="省级"><span><b>夏季糖尿病足居家观察要点</b><small>基层健康教育参考条目 · ZJHE-C-00861</small></span><span><i class="source-dot provincial"></i>省级</span><span><em class="tag">糖尿病</em><em class="tag">老年人</em></span><span><i class="status pending">待二审</i></span><span>2026-07-16</span><span><button class="text-btn inspect-corpus">复核</button></span></div>
+                <div class="table-row corpus-row" data-tag="呼吸健康" data-source="学术"><span><b>高温天气下慢阻肺患者的日常管理</b><small>学术摘要规范化条目 · ZJHE-C-00857</small></span><span><i class="source-dot academic"></i>学术</span><span><em class="tag">慢阻肺</em><em class="tag">夏季健康</em></span><span><i class="status processing">标引中</i></span><span>2026-07-15</span><span><button class="text-btn inspect-corpus">查看</button></span></div>
+                <div class="table-row corpus-row" data-tag="妇幼健康" data-source="省级"><span><b>儿童暑期运动与补水健康提示</b><small>省级疾控公开内容索引 · ZJHE-C-00849</small></span><span><i class="source-dot provincial"></i>省级</span><span><em class="tag">儿童</em><em class="tag">运动健康</em></span><span><i class="status approved">已复核</i></span><span>2026-07-15</span><span><button class="text-btn inspect-corpus">查看</button></span></div>
+              </div>
+              <div class="table-foot"><span>共 12,680 条语料 · 当前展示第 1—4 条</span><div><button disabled>上一页</button><button class="active">1</button><button>2</button><button>下一页</button></div></div>
+            </section>
+
+            <aside class="corpus-side">
+              <section class="surface-card pipeline-card">
+                <div class="card-head"><div><span class="section-kicker">AI PIPELINE</span><h3>自动化加工流水线</h3></div><span class="running-chip" id="pipelineStatus">今日已完成</span></div>
+                <div class="pipeline-list" id="pipelineList">
+                  <div class="pipeline-step done"><i>1</i><span><b>权威来源采集</b><small>原始条目 86 条</small></span><em><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-check"></use></svg></em></div>
+                  <div class="pipeline-step done"><i>2</i><span><b>智能排重</b><small>识别重复 17 条</small></span><em><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-check"></use></svg></em></div>
+                  <div class="pipeline-step done"><i>3</i><span><b>格式规范化</b><small>统一 69 条</small></span><em><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-check"></use></svg></em></div>
+                  <div class="pipeline-step done"><i>4</i><span><b>自动标引</b><small>生成标签 214 个</small></span><em><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-check"></use></svg></em></div>
+                  <div class="pipeline-step active"><i>5</i><span><b>人工二次审核</b><small>36 条待复核</small></span><em><svg class="ui-icon" aria-hidden="true"><use href="#i-loader-circle"></use></svg></em></div>
+                </div>
+                <button class="secondary-btn full" id="runCollectionBtn">立即执行采集</button>
+              </section>
+              <section class="surface-card review-card">
+                <div class="card-head"><div><span class="section-kicker">REVIEW QUEUE</span><h3>人工复核队列</h3></div><button class="text-btn">查看全部</button></div>
+                <div class="review-item"><span class="review-index">01</span><div><b>高血压患者夏季运动注意事项</b><small>置信度 96.8% · 6 个标签</small></div><button class="approve-corpus">复核</button></div>
+                <div class="review-item"><span class="review-index">02</span><div><b>老年人居家血压监测方法</b><small>置信度 95.1% · 5 个标签</small></div><button class="approve-corpus">复核</button></div>
+                <div class="review-note">机器负责规模化加工，人工负责最终质量把关。所有来源可追溯、加工过程可审计。</div>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <!-- 内容智能创作：复用浙里健教表现层 -->
+        <section class="page-view creation-page" data-view="creation">
+          <div class="page-heading creation-heading">
+            <div><span class="section-kicker">02 · ZHELI JIANJIAO CREATION WORKFLOW</span><h1>健康科普内容智能创作</h1><p>集成浙里健教“智笔医言—智核医审—智绘医合”能力，贯通智能创作、原创核验与多级审核。</p></div>
+          </div>
+
+          <div class="zljj-frame">
+            <header class="zljj-topbar">
+              <div class="zljj-logo"><span class="zljj-brand-mark"><svg class="ui-icon" aria-hidden="true"><use href="#i-wand-sparkles"></use></svg></span><div><b>浙里健教</b><small>数智健康科普创作工作台</small></div></div>
+              <nav class="zljj-nav">
+                <button class="active" data-zljj-tab="writer"><b>智笔医言</b><small>MEDSCRIBE</small></button>
+                <button data-zljj-tab="review"><b>智核医审</b><small>MEDPROOF</small></button>
+                <button data-zljj-tab="composer"><b>智绘医合</b><small>MEDVID</small></button>
+                <button data-zljj-tab="originality"><b>原创核验</b><small>ORIGINALITY</small></button>
+              </nav>
+              <div class="zljj-tools"><button aria-label="工作台布局"><svg class="ui-icon" aria-hidden="true"><use href="#i-panel-top"></use></svg></button><button aria-label="帮助中心"><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-help"></use></svg></button><span><svg class="ui-icon" aria-hidden="true"><use href="#i-user-round"></use></svg></span></div>
+            </header>
+
+            <div class="zljj-subview active" data-zljj-view="writer">
+              <aside class="writer-history">
+                <div class="zljj-panel-title"><span class="tiny-symbol"><svg class="ui-icon" aria-hidden="true"><use href="#i-sparkles"></use></svg></span><div><b>智笔医言</b><small>医学内容智能工作台</small></div></div>
+                <button class="dark-button button-with-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg>新建对话</button>
+                <div class="history-label"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-history"></use></svg>对话历史</span><button aria-label="刷新对话历史"><svg class="ui-icon" aria-hidden="true"><use href="#i-refresh-cw"></use></svg></button></div>
+                <button class="history-item active"><i><svg class="ui-icon" aria-hidden="true"><use href="#i-message-square-text"></use></svg></i><span><b>高血压长期用药安全</b><small>刚刚更新</small></span></button>
+                <button class="history-item"><i><svg class="ui-icon" aria-hidden="true"><use href="#i-message-square-text"></use></svg></i><span><b>夏季老年人健康提示</b><small>今天 09:42</small></span></button>
+                <div class="account-summary"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-user-round"></use></svg></span><div><b>管理员</b><small>省级科普内容运营</small></div><button>设置</button></div>
+              </aside>
+              <section class="writer-chat">
+                <div class="chat-title"><div><h3>高血压长期用药安全</h3></div><span class="context-chip">专题上下文</span></div>
+                <div class="chat-scroll" id="creationChat">
+                  <div class="chat-message user-message"><span class="chat-avatar user"><svg class="ui-icon" aria-hidden="true"><use href="#i-user-pen"></use></svg></span><div><small>科普作者</small><p>请面向 60 岁以上慢病人群，生成一段 60 秒社区健康教育短视频脚本，主题是“血压正常后，降压药可以自己停吗？”。表达要通俗、温和、审慎。</p></div></div>
+                <div class="chat-message ai-message" id="scriptResult"><span class="chat-avatar ai tiantian-chat-avatar"><img src="./assets/tiantian.png" alt="天天"></span><div><small>智笔医言</small><div class="script-placeholder"><i></i><i></i><i></i></div></div></div>
+                  <div class="expert-feedback hidden" id="expertFeedback"><b>专家返修意见</b><p>请补充“不可自行停药，应由医生结合连续血压记录进行评估”的风险提示，并弱化疗效性表达。</p><span>慢病心血管疾病管理科普分库</span></div>
+                </div>
+                <div class="prompt-box"><textarea id="creationPrompt" aria-label="创作提示词">面向60岁以上人群，生成60秒高血压用药安全科普短视频脚本</textarea><div><span class="inline-icon-label"><svg class="ui-icon" aria-hidden="true"><use href="#i-download"></use></svg>导出</span><span class="token-chip">专题语料已关联 8 条</span><button class="button-with-icon" id="generateScriptBtn">生成脚本<svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-up"></use></svg></button></div></div>
+              </section>
+              <aside class="writer-agents">
+                <div class="agent-head"><div><b>模型与智能体</b><small>选择适用模型或垂类能力</small></div><span><svg class="ui-icon" aria-hidden="true"><use href="#i-chevron-right"></use></svg></span></div>
+                <div class="agent-toggle"><button class="active">通用</button><button>垂类</button></div>
+                <div class="agent-card selected"><span class="agent-logo"><svg class="ui-icon" aria-hidden="true"><use href="#i-bot"></use></svg></span><div><b>健康科普创作助手</b><small>已关联权威语料库</small></div><i><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-check"></use></svg></i></div>
+                <div class="agent-card"><span class="agent-logo cyan"><svg class="ui-icon" aria-hidden="true"><use href="#i-shield-check"></use></svg></span><div><b>医学风险表达校验</b><small>谨慎用语与就医提示</small></div></div>
+                <div class="guardrail-card"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-shield-check"></use></svg></span><div><b>创作安全护栏已开启</b><small>来源引用 · 诊疗边界 · 风险表达</small></div></div>
+                <div class="agent-foot">共 2 个可用智能体</div>
+              </aside>
+            </div>
+
+            <div class="zljj-subview" data-zljj-view="review">
+              <section class="review-workbench">
+                <div class="review-toolbar"><div><span class="review-logo"><svg class="ui-icon" aria-hidden="true"><use href="#i-file-check-2"></use></svg></span><div><h3>文案审核列表</h3><small>共 6 条，当前第 1 页</small></div></div><label class="search-box"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg></span><input placeholder="请输入想要搜索的文案名称"></label><div><button class="ghost-btn button-with-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-refresh-cw"></use></svg>刷新</button><button class="primary-btn button-with-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg>添加文案</button></div></div>
+                <div class="review-tabs"><button>全部文案 <b>6</b></button><button>作者待提交 <b>1</b></button><button class="active">专家待审核 <b>2</b></button><button>作者返修 <b>1</b></button><button>平台待终审 <b>1</b></button><button>审核完成 <b>1</b></button></div>
+                <div class="table-shell review-list">
+                  <div class="table-row table-header"><span>提交时间</span><span>提交人</span><span>身份</span><span>标题</span><span>审核状态</span><span>原创度</span><span>操作</span></div>
+                  <div class="table-row featured-review"><span>2026-07-16 10:28</span><span>管理员</span><span>科普作者</span><span><b>血压正常后，降压药可以自己停吗？</b><small>60 秒短视频脚本 · ZJHE-W-20260716028</small></span><span><i class="status pending" id="creationReviewStatus">专家待审核</i></span><span><b class="originality-score">97.8%</b></span><span><button class="small-primary" id="openReviewModal">审核</button></span></div>
+                  <div class="table-row"><span>2026-07-16 09:45</span><span>管理员</span><span>基层医生</span><span><b>夏季居家血压监测三个要点</b><small>图文科普 · ZJHE-W-20260716019</small></span><span><i class="status pending">专家待审核</i></span><span><b class="originality-score">96.2%</b></span><span><button class="small-primary">审核</button></span></div>
+                </div>
+                <aside class="audit-timeline"><div class="card-head"><div><span class="section-kicker">AUDIT TRAIL</span><h3>审核记录</h3></div><button aria-label="刷新审核记录"><svg class="ui-icon" aria-hidden="true"><use href="#i-refresh-cw"></use></svg></button></div><div class="audit-record done"><i></i><span><b>作者提交</b><small>管理员 · 10:28</small></span></div><div class="audit-record active" id="auditRecord"><i></i><span><b>等待专家审核</b><small>慢病心血管疾病管理科普分库</small></span></div><div class="audit-record"><i></i><span><b>作者返修</b><small>等待前序完成</small></span></div><div class="audit-record"><i></i><span><b>正式发布</b><small>等待前序完成</small></span></div></aside>
+              </section>
+            </div>
+
+            <div class="zljj-subview" data-zljj-view="composer">
+              <section class="composer-workbench">
+                <aside class="composer-left"><div class="composer-shortcuts"><button><span><svg class="ui-icon" aria-hidden="true"><use href="#i-folder-open"></use></svg></span>我的作品</button><button><span><svg class="ui-icon" aria-hidden="true"><use href="#i-layout-template"></use></svg></span>我的设计</button><button><span><svg class="ui-icon" aria-hidden="true"><use href="#i-send"></use></svg></span>视频分发</button><button><span><svg class="ui-icon" aria-hidden="true"><use href="#i-square-play"></use></svg></span>案例视频</button></div><div class="page-manage"><b>页面管理</b><span>1 个页面</span></div><div class="page-thumb active"><div><span>天天</span><b>用药安全</b></div><small>页面 1</small></div><button class="dashed-btn button-with-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg>添加页面</button><button class="composer-aux teal">我要反馈</button></aside>
+                <section class="composer-center"><div class="canvas-toolbar"><span>就绪：是</span><span>画布：1080 × 1920</span><span>比例：9:16</span></div><div class="video-canvas"><div class="video-badge">浙江健康教育</div><div class="doctor-silhouette"><img src="./assets/tiantian.png" alt="天天健康教育智能体形象"></div><h3>血压正常了<br>能自己停药吗？</h3><p>不建议自行停药<br>请由医生结合连续血压记录评估</p><div class="subtitle-strip">规律监测 · 遵医嘱用药 · 及时复诊</div></div><div class="script-editor"><div><button class="active button-with-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-type"></use></svg>文本驱动</button><button class="button-with-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-audio-waveform"></use></svg>语音驱动</button><span>152 字</span></div><textarea>血压恢复正常，往往正是规律用药和生活管理共同作用的结果。不要自行减量或停药，应记录血压并咨询医生，由医生综合评估。</textarea></div></section>
+                <aside class="composer-layers"><div class="layer-head"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-undo-2"></use></svg><svg class="ui-icon" aria-hidden="true"><use href="#i-redo-2"></use></svg></span><b>图层 4</b></div><div class="layer-item">天天数字医生 <span>可见</span></div><div class="layer-item">主标题 <span>可见</span></div><div class="layer-item">字幕 <span>可见</span></div><div class="composer-actions"><button>保存</button><button>试听</button><button>预览</button><button class="compose-btn" id="composeVideoBtn">生成数字人视频</button></div></aside>
+                <aside class="composer-assets"><div class="asset-head"><div><b>数字人库</b><small>已选：天天</small></div><span><svg class="ui-icon" aria-hidden="true"><use href="#i-refresh-cw"></use></svg></span></div><label class="search-box"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg></span><input placeholder="搜索数字人"></label><div class="model-card selected"><div class="model-avatar"><img src="./assets/tiantian.png" alt="天天"></div><b>天天</b><small>健康教育数字医生</small><i><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-check"></use></svg></i></div><div class="asset-tabs"><button class="active">模型</button><button>配音</button><button>背景</button><button>插图</button><button>标题</button><button>视频</button><button>音乐</button><button>字幕</button></div></aside>
+              </section>
+            </div>
+
+            <div class="zljj-subview" data-zljj-view="originality">
+              <section class="originality-workbench">
+                <div class="originality-intro"><span class="score-ring" id="scoreRing"><b>--</b><small>原创度</small></span><div><span class="section-kicker">AI ORIGINALITY CHECK</span><h2>AI 原创度与风险表达核验</h2><p>对脚本相似片段、引用规范、诊疗边界与风险提示进行综合核验。</p><button class="primary-btn" id="runOriginality">开始核验</button></div></div>
+                <div class="check-grid"><article><span>01</span><div><b>内容相似度</b><small id="similarityCheck">等待核验</small></div><i><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-minus"></use></svg></i></article><article><span>02</span><div><b>来源引用</b><small id="citationCheck">等待核验</small></div><i><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-minus"></use></svg></i></article><article><span>03</span><div><b>风险表达</b><small id="riskCheck">等待核验</small></div><i><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-minus"></use></svg></i></article><article><span>04</span><div><b>诊疗边界</b><small id="boundaryCheck">等待核验</small></div><i><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-minus"></use></svg></i></article></div>
+                <div class="originality-note"><b>检测说明</b><p>核验结果将随内容版本归档，并作为专家审核与平台终审的辅助依据。</p></div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <!-- 多媒体资源 -->
+        <section class="page-view" data-view="media">
+          <div class="page-heading"><div><span class="section-kicker">03 · MULTIMEDIA ASSET HUB</span><h1>健康科普多媒体资源管理</h1><p>图文、视频、音频统一入库，支持标准化上传、智能标引、精准检索与多端发布。</p></div><div class="heading-actions"><button class="ghost-btn" id="batchManage">批量管理</button><button class="primary-btn button-with-icon" id="uploadResource"><svg class="ui-icon" aria-hidden="true"><use href="#i-upload"></use></svg>标准化上传</button></div></div>
+          <nav class="module-tabs" data-module="media"><button class="active">资源库</button><button>上传队列 <em>4</em></button><button>专题合集</button><button>发布任务 <em>7</em></button><button>渠道配置</button></nav>
+          <div class="metric-grid four-metrics"><article class="mini-stat"><span>资源总量</span><strong>2,416</strong><small>已纳管资源</small></article><article class="mini-stat"><span>本月新增</span><strong>186</strong><small>较上月 +12.4%</small></article><article class="mini-stat"><span>已审核</span><strong>2,308</strong><small>占比 95.5%</small></article><article class="mini-stat"><span>累计复用</span><strong>18,642</strong><small>跨渠道调用次数</small></article></div>
+          <section class="surface-card resource-library">
+            <div class="resource-toolbar"><div class="filter-group"><label>疾病领域<select id="mediaDisease"><option value="all">全部领域</option><option value="高血压">高血压</option><option value="糖尿病">糖尿病</option><option value="儿童健康">儿童健康</option></select></label><label>内容形式<select id="mediaType"><option value="all">全部形式</option><option value="video">短视频</option><option value="article">图文</option><option value="audio">音频</option></select></label><label>目标人群<select id="mediaAudience"><option value="all">全部人群</option><option value="老年人">老年人</option><option value="儿童">儿童</option><option value="职场人群">职场人群</option></select></label></div><label class="search-box"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg></span><input id="mediaSearch" placeholder="搜索资源标题、标签"></label><div class="view-switch"><button class="active" aria-label="网格视图"><svg class="ui-icon" aria-hidden="true"><use href="#i-grid-2x2"></use></svg></button><button aria-label="列表视图"><svg class="ui-icon" aria-hidden="true"><use href="#i-list"></use></svg></button></div></div>
+            <div class="resource-grid" id="resourceGrid">
+              <article class="resource-card featured" data-disease="高血压" data-type="video" data-audience="老年人"><button class="resource-cover cover-hypertension"><img class="resource-cover-image" src="./assets/covers/hypertension-medication.png" alt="老年人居家测量血压并接受专业用药指导"><span class="format-badge">短视频 · 00:58</span><div class="play-btn"><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-play"></use></svg></div><b>血压正常了<br>能自己停药吗？</b></button><div class="resource-meta"><div><span class="status approved">已审核</span><small>ZJHE-R-2026-0328</small></div><h3>一分钟看懂：血压正常后为什么不能随意停药</h3><div class="tag-line"><em>高血压</em><em>用药安全</em><em>老年人</em></div><footer><span>更新于 10 分钟前</span><button class="resource-detail">查看详情</button></footer></div></article>
+              <article class="resource-card" data-disease="高血压" data-type="article" data-audience="老年人"><button class="resource-cover cover-measure"><img class="resource-cover-image" src="./assets/covers/home-blood-pressure.png" alt="规范居家测量血压姿势示意"><span class="format-badge">图文 · 6 页</span><div class="cover-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-file-heart"></use></svg></div><b>居家测血压<br>记住这 4 步</b></button><div class="resource-meta"><div><span class="status approved">已审核</span><small>ZJHE-R-2026-0316</small></div><h3>老年人居家血压监测实用指南</h3><div class="tag-line"><em>血压监测</em><em>老年健康</em></div><footer><span>更新于今天 09:42</span><button class="resource-detail">查看详情</button></footer></div></article>
+              <article class="resource-card" data-disease="糖尿病" data-type="video" data-audience="老年人"><button class="resource-cover cover-diabetes"><img class="resource-cover-image" src="./assets/covers/diabetic-foot-care.png" alt="老年人进行日常足部观察与护理"><span class="format-badge">短视频 · 01:26</span><div class="play-btn"><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-play"></use></svg></div><b>夏季足部护理<br>每天看一看</b></button><div class="resource-meta"><div><span class="status pending">专家复核</span><small>ZJHE-R-2026-0309</small></div><h3>糖尿病足夏季居家观察要点</h3><div class="tag-line"><em>糖尿病</em><em>足部护理</em></div><footer><span>更新于昨天</span><button class="resource-detail">查看详情</button></footer></div></article>
+              <article class="resource-card" data-disease="儿童健康" data-type="audio" data-audience="儿童"><button class="resource-cover cover-child"><img class="resource-cover-image" src="./assets/covers/children-summer-hydration.png" alt="儿童夏季运动后在树荫下科学补水"><span class="format-badge">音频 · 03:20</span><div class="cover-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-audio-lines"></use></svg></div><b>暑期运动补水<br>健康小课堂</b></button><div class="resource-meta"><div><span class="status approved">已审核</span><small>ZJHE-R-2026-0298</small></div><h3>儿童暑期运动与补水健康提示</h3><div class="tag-line"><em>儿童健康</em><em>运动</em><em>补水</em></div><footer><span>更新于 07-15</span><button class="resource-detail">查看详情</button></footer></div></article>
+            </div>
+            <div class="empty-filter hidden" id="resourceEmpty"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg></span><b>暂未找到匹配的资源</b><small>请调整筛选条件后重试</small></div>
+          </section>
+        </section>
+
+        <!-- 专家库 -->
+        <section class="page-view" data-view="experts">
+          <div class="page-heading"><div><span class="section-kicker">04 · EXPERT SERVICE NETWORK</span><h1>健康科普专家库管理</h1><p>依据省级官方名录管理 24 个健康科普分库，贯通成员检索、讲座预约、活动通知、过程资料与满意度评价。</p></div><div class="heading-actions"><a class="credential-badge official-source-link" href="https://wsjkw.zj.gov.cn/art/2023/9/15/art_1229560650_2491204.html" target="_blank" rel="noopener">名录依据：浙卫办〔2023〕13号</a><button class="primary-btn button-with-icon" id="bookExpertTop"><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar-plus"></use></svg>发起讲座预约</button></div></div>
+          <nav class="module-tabs" data-module="experts"><button class="active">专家名录</button><button>讲座预约 <em>6</em></button><button>活动管理</button><button>满意度评价</button><button>服务统计</button></nav>
+          <div class="expert-stats"><article><span><svg class="ui-icon" aria-hidden="true"><use href="#i-users-round"></use></svg></span><div><strong data-counter="2351">2,351</strong><small>名录成员</small></div><em>官方公布总数</em></article><article><span><svg class="ui-icon" aria-hidden="true"><use href="#i-layers"></use></svg></span><div><strong data-counter="24">24</strong><small>健康科普分库</small></div><em>按专业领域分类管理</em></article><article><span><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar-check"></use></svg></span><div><strong>42</strong><small>本月预约</small></div><em>待确认 6 场</em></article><article><span><svg class="ui-icon" aria-hidden="true"><use href="#i-presentation"></use></svg></span><div><strong>128</strong><small>年度活动</small></div><em>覆盖基层 74 家</em></article></div>
+          <div class="expert-layout">
+            <section class="surface-card expert-list-card">
+              <div class="expert-directory-head"><div><span class="section-kicker">OFFICIAL EXPERT DIRECTORY</span><h3>省健康科普专家库成员名录</h3></div><span class="expert-result-count" id="expertResultCount">共 2,351 名成员</span></div>
+              <div class="expert-directory-toolbar" id="expertDirectoryToolbar">
+                <label class="search-box expert-directory-search"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg></span><input id="expertSearch" type="search" autocomplete="off" placeholder="搜索姓名、科普分库或牵头单位" aria-label="搜索专家库成员"></label>
+                <label class="expert-filter"><span>科普分库</span><select id="expertLibrary" aria-label="按科普分库筛选"><option value="all">全部 24 个分库</option></select></label>
+                <label class="expert-filter"><span>成员角色</span><select id="expertRole" aria-label="按成员角色筛选"><option value="all">全部角色</option><option value="组长">组长</option><option value="副组长">副组长</option><option value="联络员">联络员</option><option value="成员">成员</option></select></label>
+                <button class="ghost-btn expert-filter-reset" id="clearExpertFilters" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-refresh-cw"></use></svg>重置筛选</button>
+              </div>
+              <div class="expert-directory-note"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-info"></use></svg>各分库成员姓名以姓氏笔画为序</span><small>支持按分库、角色与牵头单位交叉检索</small></div>
+              <div class="expert-cards" id="expertCards" aria-live="polite"><div class="expert-loading" id="expertLoading"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-loader-circle"></use></svg></span><b>正在加载官方成员名录</b><small>共 24 个科普分库、2,351 名成员</small></div></div>
+              <nav class="expert-pagination" id="expertPagination" aria-label="专家名录分页"></nav>
+            </section>
+            <aside class="surface-card appointment-card expert-detail-card" aria-live="polite">
+              <div class="expert-detail-heading"><span class="section-kicker">MEMBER RECORD</span><h3>官方名录信息</h3><small>选中成员后可发起基层科普讲座预约</small></div>
+              <div class="appointment-cover"><span class="expert-avatar avatar-one"><svg class="ui-icon" aria-hidden="true"><use href="#i-user-check"></use></svg></span><div><small>当前选中成员</small><h3 id="selectedExpertName">请选择成员</h3><p id="selectedExpertRole">从左侧官方名录中选择</p></div><i id="selectedExpertLibraryBadge">官方名录</i></div>
+              <dl class="expert-official-detail">
+                <div><dt>所属科普分库</dt><dd id="selectedExpertLibrary">未选择</dd></div>
+                <div><dt>名录角色</dt><dd id="selectedExpertRoleDetail">未选择</dd></div>
+                <div><dt>分库牵头单位</dt><dd id="selectedExpertLeadUnit">未选择</dd></div>
+                <div><dt>分库名录序号</dt><dd id="selectedExpertOrdinal">未选择</dd></div>
+              </dl>
+              <div class="expert-booking-tip"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar-plus"></use></svg></span><div><b>基层科普服务预约</b><p>提交活动主题、举办单位、时间地点和预计人数后，进入专家确认与活动通知流程。</p></div></div>
+              <button class="primary-btn full button-with-icon" id="bookExpert"><svg class="ui-icon" aria-hidden="true"><use href="#i-calendar-plus"></use></svg>预约该成员参与讲座</button>
+              <div class="expert-source-note"><b><svg class="ui-icon" aria-hidden="true"><use href="#i-badge-check"></use></svg>名录来源</b><p>《省卫生健康委办公室等关于公布浙江省健康科普专家库分库成员名单的通知》（浙卫办〔2023〕13号），发布日期：2023-09-15。</p><a href="https://wsjkw.zj.gov.cn/art/2023/9/15/art_1229560650_2491204.html" target="_blank" rel="noopener">查看浙江省卫生健康委员会官方通知 <svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a><small>“分库牵头单位”为分库管理信息，不代表成员个人所属单位。</small></div>
+            </aside>
+          </div>
+          <section class="surface-card activity-flow-card"><div class="card-head"><div><span class="section-kicker">ACTIVITY LIFECYCLE</span><h3>基层科普活动全过程</h3></div><button class="text-btn" id="showCompletedActivity">查看活动台账</button></div><div class="activity-flow" id="activityFlow"><div class="done"><i><svg class="ui-icon" aria-hidden="true"><use href="#i-circle-check"></use></svg></i><span><b>预约申请</b><small>基层单位发起</small></span></div><em></em><div class="active"><i>2</i><span><b>专家确认</b><small>待专家确认时间</small></span></div><em></em><div><i>3</i><span><b>活动通知</b><small>多端触达参与者</small></span></div><em></em><div><i>4</i><span><b>过程资料</b><small>签到、照片、讲义</small></span></div><em></em><div><i>5</i><span><b>满意度评价</b><small>形成服务闭环</small></span></div></div></section>
+        </section>
+
+        <!-- 天天问答 -->
+        <section class="page-view tiantian-page" data-view="tiantian">
+          <div class="page-heading"><div><span class="section-kicker">05 · TIANTIAN HEALTH ASSISTANT</span><h1>“天天”健康教育智能体</h1><p>面向公众提供清晰、审慎的健康科普对话服务。</p></div><div class="heading-actions"><button class="ghost-btn button-with-icon" id="resetChat"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg>新建对话</button></div></div>
+          <div class="tiantian-dialogue-shell">
+            <aside class="tiantian-character-stage" id="tiantianCharacterStage" aria-label="天天智能体形象">
+              <div class="character-glow"></div>
+              <div class="character-speech"><b>您好，我是天天</b><span>很高兴为您解答健康科普问题</span></div>
+              <img class="tiantian-fullbody" src="./assets/tiantian.png" alt="天天健康教育智能体全身形象">
+              <div class="character-shadow"></div>
+              <div class="character-status"><span></span><b>健康科普对话助手</b></div>
+            </aside>
+            <section class="surface-card assistant-chat tiantian-conversation">
+              <div class="assistant-chat-head"><div><span class="tiantian-mini-mark"><svg class="ui-icon" aria-hidden="true"><use href="#i-message-circle-heart"></use></svg></span><div><h3>与天天对话</h3><small>您可以直接输入健康科普问题</small></div></div><span class="topic-chip">健康科普</span></div>
+              <div class="assistant-messages" id="assistantMessages"><div class="assistant-welcome dialogue-welcome"><div><small>TIANTIAN HEALTH EDUCATION</small><h2>今天想了解什么健康知识？</h2><p>我会用通俗易懂的方式提供健康科普信息。涉及症状、用药调整或诊疗决策时，请及时咨询专业医务人员。</p><div class="quick-questions"><button>血压正常了，降压药可以停吗？</button><button>在家怎样记录血压更准确？</button><button>高血压人群夏季运动要注意什么？</button></div></div></div></div>
+              <div class="assistant-input"><textarea id="assistantInput" aria-label="向天天提问" placeholder="请输入您想了解的健康问题……"></textarea><div><span>健康科普信息不能替代医生诊断和治疗</span><button class="button-with-icon" id="sendQuestion">发送问题<svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-up"></use></svg></button></div></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- 健康素养监测数据分析驾驶舱 -->
+        <section class="page-view analytics-page" data-view="analytics">
+          <div class="literacy-screen">
+            <header class="literacy-screen-head">
+              <div class="screen-brand"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-landmark"></use></svg></span><div><b>浙里健教-浙江省健康科普数智创新平台</b><small>数据驱动 · 精准科普 · 决策反哺</small></div></div>
+              <div class="screen-title"><small>ZHEJIANG HEALTH LITERACY MONITORING</small><h1>浙江省健康素养监测</h1><i></i></div>
+              <div class="screen-meta"><div><b id="analyticsDate">2026-07-16</b><small id="analyticsClock">15:30:00　星期四</small></div><span id="analyticsDataTime">数据更新于 15:42</span></div>
+            </header>
+
+            <div class="screen-control-row">
+              <nav class="dashboard-tabs literacy-stages" aria-label="数据分析阶段">
+                <button class="active" data-dashboard-tab="overview"><b>01</b><span>数据接入</span></button><i><svg class="ui-icon" aria-hidden="true"><use href="#i-chevron-right"></use></svg></i>
+                <button data-dashboard-tab="quality"><b>02</b><span>质量治理</span></button><i><svg class="ui-icon" aria-hidden="true"><use href="#i-chevron-right"></use></svg></i>
+                <button data-dashboard-tab="questionnaire"><b>03</b><span>多维分析</span></button><i><svg class="ui-icon" aria-hidden="true"><use href="#i-chevron-right"></use></svg></i>
+                <button data-dashboard-tab="trend"><b>04</b><span>策略生成</span></button>
+              </nav>
+              <div class="screen-filters"><label>年度<select><option>2026</option><option>2025</option></select></label><label>人群<select id="populationFilter"><option value="all">全部人群</option><option value="elderly">65 岁以上</option><option value="youth">18—34 岁</option></select></label><button class="button-with-icon" id="uploadSurvey"><svg class="ui-icon" aria-hidden="true"><use href="#i-upload"></use></svg>上传监测数据</button></div>
+            </div>
+
+            <div class="literacy-main-grid">
+              <aside class="literacy-left-column">
+                <section class="screen-panel quality-panel">
+                  <div class="screen-panel-title"><span><b>01</b> 数据质量总览</span><small>上传与清洗结果</small></div>
+                  <div class="quality-total"><span>有效监测样本</span><strong>8,600<small> 份</small></strong><em>较上期 <b>+6.4%</b></em></div>
+                  <div class="quality-row"><div class="quality-ring"><i><b>99.3%</b><small>完整率</small></i></div><ul><li><span>缺失项</span><b>7</b></li><li><span>数值越界</span><b>11</b></li><li><span>逻辑冲突</span><b>5</b></li></ul></div>
+                  <div class="quality-status"><span><i class="cyan-dot"></i>原始记录 8,642</span><span><i class="green-dot"></i>已清洗 8,600</span></div>
+                </section>
+                <section class="screen-panel sample-panel">
+                  <div class="screen-panel-title"><span><b>02</b> 监测样本结构</span><small>重点人群分布</small></div>
+                  <div class="sample-head"><div><small>覆盖监测点</small><strong>96 <i>个</i></strong></div><div><small>覆盖设区市</small><strong>11 <i>个</i></strong></div></div>
+                  <div class="screen-bars"><div><span>65 岁以上</span><i><b style="width:74%"></b></i><em>2,486</em></div><div><span>45—64 岁</span><i><b style="width:64%"></b></i><em>2,148</em></div><div><span>35—44 岁</span><i><b style="width:48%"></b></i><em>1,612</em></div><div><span>18—34 岁</span><i><b style="width:70%"></b></i><em>2,354</em></div></div>
+                  <div class="sample-split"><span><b>52.8%</b><small>城镇样本</small></span><span><b>47.2%</b><small>乡村样本</small></span></div>
+                </section>
+              </aside>
+
+              <section class="province-monitor-panel">
+                <div class="province-panel-head"><div><span class="screen-kicker">PROVINCIAL MONITORING NETWORK</span><h2>全省健康素养监测点分布</h2></div><div class="map-legend"><span><i class="level-high"></i>高于全省均值</span><span><i class="level-mid"></i>接近全省均值</span><span><i class="level-focus"></i>重点提升</span></div></div>
+                <div class="zhejiang-monitor-map">
+                  <div class="map-grid-lines"></div>
+                  <div class="zhejiang-echarts-map" id="zhejiangMapChart" role="img" aria-label="浙江省11个设区市健康素养监测地图"></div>
+                  <div class="map-overview-badge"><small>全省综合健康素养水平</small><strong id="literacyRate">34.6<em>%</em></strong><span>较上期提升 2.3 个百分点</span></div>
+                  <div class="map-summary"><div><span>监测样本</span><b>8,600</b></div><div><span>数据完整率</span><b>99.3%</b></div><div><span>重点提升地区</span><b>2 个</b></div></div>
+                </div>
+              </section>
+
+              <aside class="literacy-right-column">
+                <section class="screen-panel weak-panel">
+                  <div class="screen-panel-title"><span><b>03</b> 素养薄弱维度</span><small>相对水平排序</small></div>
+                  <div class="rank-bars"><div><span>慢病用药安全</span><i><b style="width:82%"></b></i><em>26.8%</em></div><div><span>健康信息辨识</span><i><b style="width:68%"></b></i><em>31.2%</em></div><div><span>基本医疗</span><i><b style="width:61%"></b></i><em>35.1%</em></div><div><span>健康生活方式</span><i><b style="width:54%"></b></i><em>37.2%</em></div><div><span>安全与急救</span><i><b style="width:47%"></b></i><em>42.8%</em></div></div>
+                </section>
+                <section class="screen-panel screen-trend-panel">
+                  <div class="screen-panel-title"><span><b>04</b> 素养水平趋势</span><small>2022—2026</small></div>
+                  <div class="screen-chart-legend"><span><i></i>全省</span><span><i></i>65 岁以上</span></div>
+                  <div class="screen-chart-wrap"><canvas id="trendChart" aria-label="健康素养水平趋势"></canvas></div>
+                </section>
+                <section class="screen-panel screen-insight-panel">
+                  <div class="screen-panel-title"><span><b>05</b> 分析结论</span><small>智能洞察</small></div>
+                  <blockquote id="insightText">65 岁以上人群在“慢病用药安全”维度相对薄弱，建议优先配置短视频、社区讲座和智能问答服务。</blockquote>
+                  <div class="screen-strategy"><span>短视频</span><span>社区讲座</span><span>智能问答</span></div>
+                  <button class="button-with-icon" id="generateTopic">生成下一轮科普任务<svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></button>
+                </section>
+              </aside>
+            </div>
+
+            <div class="literacy-bottom-row">
+              <article class="bottom-kpi"><span>重点人群触达率</span><strong>78.6<small>%</small></strong><em class="inline-icon-label">较上期 <svg class="ui-icon" aria-hidden="true"><use href="#i-trending-up"></use></svg>5.2%</em></article>
+              <article class="bottom-kpi"><span>科普内容采纳率</span><strong>62.4<small>%</small></strong><em class="inline-icon-label">较上期 <svg class="ui-icon" aria-hidden="true"><use href="#i-trending-up"></use></svg>3.8%</em></article>
+              <article class="bottom-kpi"><span>基层活动覆盖</span><strong>74<small>家</small></strong><em>本年度 128 场</em></article>
+              <section class="screen-panel channel-panel"><div class="screen-panel-title"><span>内容获取渠道偏好</span><small>65 岁以上人群</small></div><div class="channel-bars"><div><span>社区讲座</span><i><b style="width:82%"></b></i><em>38%</em></div><div><span>短视频</span><i><b style="width:70%"></b></i><em>32%</em></div><div><span>智能问答</span><i><b style="width:45%"></b></i><em>21%</em></div></div></section>
+              <section class="screen-panel action-panel"><div><small>数据反哺闭环</small><b class="inline-flow-label">监测发现 <svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg> 精准选题 <svg class="ui-icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg> 内容生产</b><span>本轮建议优先：高血压长期用药安全</span></div><button id="screenTopicShortcut">立即创建任务</button></section>
+            </div>
+            <footer class="screen-data-note">数据来源：健康素养监测业务库 · 统计口径：2026 年度已完成质量校验的有效样本</footer>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-window" id="modalWindow"><button class="modal-close" id="modalClose" aria-label="关闭"><svg class="ui-icon" aria-hidden="true"><use href="#i-x"></use></svg></button><div id="modalContent"></div></div>
+  </div>
+  <div class="drawer-scrim hidden" id="drawerScrim"></div>
+  <aside class="saas-drawer hidden" id="saasDrawer" aria-label="工作中心">
+    <header><div><small id="drawerKicker">WORK CENTER</small><h2 id="drawerTitle">工作中心</h2></div><button id="drawerClose" aria-label="关闭"><svg class="ui-icon" aria-hidden="true"><use href="#i-x"></use></svg></button></header>
+    <div class="saas-drawer-body" id="drawerContent"></div>
+  </aside>
+  <div class="user-popover hidden" id="userPopover">
+    <div class="user-profile-head"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-user-round"></use></svg></span><div><b>管理员</b><small>用户编号 U-20260138 · 省级账号</small></div></div>
+    <button id="profileSettings">个人设置</button><button id="organizationSettings">组织与成员</button><button id="securityCenter">安全中心</button><hr><button id="signOut">退出登录</button>
+  </div>
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <script src="./assets/expert-data.js"></script>
+  <script src="./assets/expert-data-1.js"></script>
+  <script src="./assets/expert-data-2.js"></script>
+  <script src="./assets/expert-data-3.js"></script>
+  <script src="./assets/vendor/echarts.min.js"></script>
+  <script src="./assets/maps/zhejiang-cities.js"></script>
+  <script src="./assets/app.js"></script>
+</body>
+</html>

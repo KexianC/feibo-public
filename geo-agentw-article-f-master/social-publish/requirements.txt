@@ -1,0 +1,5 @@
+Flask[async]>=3.1,<4
+flask-cors>=6,<7
+loguru>=0.7,<1
+playwright>=1.55,<2
+watchfiles>=1.1,<2

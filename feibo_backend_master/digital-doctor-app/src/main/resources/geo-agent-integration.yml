@@ -1,0 +1,97 @@
+# GEO backend defaults for the unified Feibo process. Secrets remain environment-only.
+storage-path: ${APP_STORAGE_PATH:${user.home}/geo-agent/documents}
+
+app:
+  geo-integration:
+    enabled: true
+    api-prefix: /geo-agent-api
+    required-role: SUPER_ADMIN
+  security:
+    max-upload-bytes: ${APP_MAX_UPLOAD_BYTES:20971520}
+  rag:
+    enabled: ${APP_RAG_ENABLED:true}
+    chunk-size: ${APP_RAG_CHUNK_SIZE:800}
+    chunk-overlap: ${APP_RAG_CHUNK_OVERLAP:120}
+    top-k: ${APP_RAG_TOP_K:10}
+    score-threshold: ${APP_RAG_SCORE_THRESHOLD:0.6}
+    max-context-chars: ${APP_RAG_MAX_CONTEXT_CHARS:6000}
+    qdrant:
+      base-url: ${QDRANT_BASE_URL:http://127.0.0.1:6333}
+      api-key: ${QDRANT_API_KEY:}
+      collection-name: ${QDRANT_COLLECTION_NAME:geo_agent_knowledge}
+      distance: ${QDRANT_DISTANCE:Cosine}
+  publish:
+    base-url: ${PUBLISH_SERVICE_BASE_URL:http://127.0.0.1:5409}
+    internal-token: ${PUBLISH_INTERNAL_TOKEN:}
+  geo:
+    monitor-enabled: ${GEO_MONITOR_ENABLED:false}
+    monitor-cron: "${GEO_MONITOR_CRON:0 0 */6 * * ?}"
+    monitor-batch-size: ${GEO_MONITOR_BATCH_SIZE:20}
+    monitor-stale-hours: ${GEO_MONITOR_STALE_HOURS:24}
+    worker-batch-size: ${GEO_WORKER_BATCH_SIZE:8}
+    worker-concurrency: ${GEO_WORKER_CONCURRENCY:3}
+    platform-concurrency: ${GEO_PLATFORM_CONCURRENCY:1}
+    platform-min-interval-ms: ${GEO_PLATFORM_MIN_INTERVAL_MS:1200}
+    worker-poll-ms: ${GEO_WORKER_POLL_MS:15000}
+    task-max-attempts: ${GEO_TASK_MAX_ATTEMPTS:2}
+    task-retry-delay-minutes: ${GEO_TASK_RETRY_DELAY_MINUTES:10}
+    auto-optimization-enabled: ${GEO_AUTO_OPTIMIZATION_ENABLED:false}
+    feedback-context-limit: ${GEO_FEEDBACK_CONTEXT_LIMIT:4000}
+    probe-enabled: ${GEO_PROBE_ENABLED:false}
+    probe-worker-batch-size: ${GEO_PROBE_WORKER_BATCH_SIZE:4}
+    probe-worker-concurrency: ${GEO_PROBE_WORKER_CONCURRENCY:2}
+    probe-poll-ms: ${GEO_PROBE_POLL_MS:10000}
+    probe-max-rounds: ${GEO_PROBE_MAX_ROUNDS:2}
+    website-monitor-enabled: ${GEO_WEBSITE_MONITOR_ENABLED:true}
+    website-worker-batch-size: ${GEO_WEBSITE_WORKER_BATCH_SIZE:4}
+    website-worker-concurrency: ${GEO_WEBSITE_WORKER_CONCURRENCY:2}
+    website-worker-poll-ms: ${GEO_WEBSITE_WORKER_POLL_MS:15000}
+    website-connect-timeout-ms: ${GEO_WEBSITE_CONNECT_TIMEOUT_MS:3000}
+    website-read-timeout-ms: ${GEO_WEBSITE_READ_TIMEOUT_MS:8000}
+    website-max-bytes: ${GEO_WEBSITE_MAX_BYTES:2097152}
+    website-max-redirects: ${GEO_WEBSITE_MAX_REDIRECTS:3}
+    official-domains: ${GEO_OFFICIAL_DOMAINS:hztcm.cn}
+    engines:
+      - name: ${GEO_QWEN_ENGINE_NAME:qwen}
+        protocol: dashscope
+        base-url: ${GEO_QWEN_BASE_URL:https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation}
+        api-key: ${DASHSCOPE_API_KEY}
+        model: ${GEO_QWEN_MODEL:qwen-plus}
+        timeout-seconds: ${GEO_QWEN_TIMEOUT_SECONDS:90}
+        enabled: ${GEO_QWEN_ENABLED:true}
+        enable-search: ${GEO_QWEN_ENABLE_SEARCH:true}
+        enable-source: ${GEO_QWEN_ENABLE_SOURCE:true}
+        enable-citation: ${GEO_QWEN_ENABLE_CITATION:true}
+        search-strategy: ${GEO_QWEN_SEARCH_STRATEGY:max}
+        temperature: ${GEO_QWEN_TEMPERATURE:0.2}
+      - name: ${GEO_BAIDU_QIANFAN_ENGINE_NAME:baidu-qianfan}
+        protocol: qianfan-ai-search
+        base-url: ${GEO_BAIDU_QIANFAN_BASE_URL:https://qianfan.baidubce.com/v2/ai_search/web_search}
+        api-key: ${BAIDU_QIANFAN_API_KEY:}
+        model: ${GEO_BAIDU_QIANFAN_MODEL:web_search}
+        timeout-seconds: ${GEO_BAIDU_QIANFAN_TIMEOUT_SECONDS:30}
+        enabled: ${GEO_BAIDU_QIANFAN_ENABLED:false}
+        search-top-k: ${GEO_BAIDU_QIANFAN_TOP_K:10}
+        search-recency-filter: ${GEO_BAIDU_QIANFAN_RECENCY_FILTER:}
+        safe-search: ${GEO_BAIDU_QIANFAN_SAFE_SEARCH:true}
+        search-strategy: ${GEO_BAIDU_QIANFAN_SEARCH_STRATEGY:}
+        temperature: 0.0
+
+langchain4j:
+  community:
+    dashscope:
+      streaming-chat-model:
+        api-key: ${DASHSCOPE_API_KEY}
+        model-name: ${DASHSCOPE_CHAT_MODEL:qwen-plus}
+        temperature: ${DASHSCOPE_TEMPERATURE:0.7}
+        max-tokens: ${DASHSCOPE_MAX_TOKENS:4096}
+        enable-search: ${DASHSCOPE_ENABLE_SEARCH:true}
+      embedding-model:
+        api-key: ${DASHSCOPE_API_KEY}
+        model-name: ${DASHSCOPE_EMBEDDING_MODEL:text-embedding-v4}
+
+thread-pool:
+  core-pool-size: ${GEO_THREAD_POOL_CORE_SIZE:4}
+  max-pool-size: ${GEO_THREAD_POOL_MAX_SIZE:4}
+  keep-alive-seconds: ${GEO_THREAD_POOL_KEEP_ALIVE_SECONDS:60}
+  queue-capacity: ${GEO_THREAD_POOL_QUEUE_CAPACITY:1000}

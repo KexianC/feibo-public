@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.UserRoleMapMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.UserRoleMap">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <select id="selectUserRoleIdsByUserId" resultType="java.lang.Long">
+        select role_id
+        from t_user_role_map
+        where user_id = #{userId}
+    </select>
+    <select id="selectExpertRoleMapIdForUpdate" resultType="java.lang.Long">
+        select urm.id
+        from t_user_role_map urm
+        inner join t_role r on r.role_id = urm.role_id
+        where urm.user_id = #{userId}
+          and upper(r.name) = 'EXPERT'
+        limit 1
+        for update
+    </select>
+    <select id="selectGlobalAdminRoleMapIdForUpdate" resultType="java.lang.Long">
+        select urm.id
+        from t_user_role_map urm
+        inner join t_role r on r.role_id = urm.role_id
+        inner join t_user u on u.user_id = urm.user_id
+        where urm.user_id = #{userId}
+          and coalesce(u.status, 0) = 0
+          and upper(r.name) in ('ADMIN', 'SUPER_ADMIN', 'SUPERADMIN')
+        order by urm.id
+        limit 1
+        for update
+    </select>
+</mapper>

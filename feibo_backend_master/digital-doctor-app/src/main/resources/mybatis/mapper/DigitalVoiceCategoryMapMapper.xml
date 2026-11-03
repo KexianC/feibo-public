@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.DigitalVoiceCategoryMapMapper">
+
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.DigitalVoiceCategoryMap">
+        <id property="id" column="id"/>
+        <result property="voiceId" column="voice_id"/>
+        <result property="voiceCategoryId" column="voice_category_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectDigitalVoiceIdsByDigitalVoiceCategoryIdInDigitalVoiceIds" resultType="java.lang.Long">
+        SELECT voice_id
+        FROM digital_voice_category_map
+        WHERE voice_category_id = #{digitalVoiceCategoryId}
+        <if test="digitalVoiceIds != null and digitalVoiceIds.size() > 0">
+            AND voice_id IN
+            <foreach collection="digitalVoiceIds" item="voiceId" open="(" separator="," close=")">
+                #{voiceId}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

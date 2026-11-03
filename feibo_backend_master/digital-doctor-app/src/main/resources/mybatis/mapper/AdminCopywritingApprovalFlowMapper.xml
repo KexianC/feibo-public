@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.domain.mapper.function.AdminCopywritingApprovalFlowMapper">
+    <resultMap id="BaseResultMap" type="com.hzmwmt.domain.entity.function.TCopywritingApprovalFlow">
+        <id property="id" column="id"/>
+        <result property="copywritingApprovalFlowId" column="copywriting_approval_flow_id"/>
+        <result property="copywritingId" column="copywriting_id"/>
+        <result property="currentStatus" column="current_status"/>
+        <result property="currentProcessorId" column="current_processor_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 分页查询待专家组专业审核的文案 -->
+    <select id="selectExpertApprovalFlowListPage" resultMap="BaseResultMap">
+        SELECT id,
+               copywriting_approval_flow_id,
+               copywriting_id,
+               current_status,
+               current_processor_id,
+               create_time,
+               update_time
+        FROM t_copywriting_approval_flow
+        WHERE current_status = 1
+        ORDER BY create_time DESC
+            LIMIT #{offset}, #{size}
+    </select>
+
+    <!-- 查询待专家组专业审核的文案总数 -->
+    <select id="selectExpertApprovalFlowCount" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM t_copywriting_approval_flow
+        WHERE current_status = 1
+    </select>
+
+    <!-- 分页查询待所属医院/机构终审的文案 -->
+    <select id="selectPlatformApprovalFlowListPage" resultMap="BaseResultMap">
+        SELECT id,
+               copywriting_approval_flow_id,
+               copywriting_id,
+               current_status,
+               current_processor_id,
+               create_time,
+               update_time
+        FROM t_copywriting_approval_flow
+        WHERE current_status = 3
+        ORDER BY create_time DESC
+            LIMIT #{offset}, #{size}
+    </select>
+
+    <!-- 查询待所属医院/机构终审的文案总数 -->
+    <select id="selectPlatformApprovalFlowCount" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM t_copywriting_approval_flow
+        WHERE current_status = 3
+    </select>
+</mapper>

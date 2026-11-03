@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzmwmt.infrastructure.dao.UserAIResourceDetailMapper">
+
+    <resultMap id="BaseResultMap" type="com.hzmwmt.infrastructure.dao.po.UserAIResourceDetail">
+        <id property="id" column="id"/>
+        <result property="userAiResourceId" column="user_ai_resource_id"/>
+        <result property="userAiResourceDetailId" column="user_ai_resource_detail_id"/>
+        <result property="balance" column="balance"/>
+        <result property="type" column="type"/>
+        <result property="expiryTime" column="expiry_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+    <!--    <select id="selectValidSubscriptionResources" resultMap="BaseResultMap">-->
+    <!--        SELECT id, user_ai_resource_detail_id, user_ai_resource_id, balance, type, expiry_time, create_time, update_time-->
+    <!--        FROM t_user_ai_resource_detail-->
+    <!--        WHERE user_ai_resource_id = #{userAiResourceId}-->
+    <!--          AND type = 0-->
+    <!--          AND balance >= #{amount}-->
+    <!--          AND  expiry_time > NOW()-->
+    <!--        ORDER BY  expiry_time-->
+    <!--    </select>-->
+
+    <!--    <select id="selectValidPurchasedResources" resultMap="BaseResultMap">-->
+    <!--        SELECT id, user_ai_resource_detail_id, user_ai_resource_id, balance, type, expiry_time, create_time, update_time-->
+    <!--        FROM t_user_ai_resource_detail-->
+    <!--        WHERE user_ai_resource_id = #{userAiResourceId}-->
+    <!--          AND type = 1-->
+    <!--          AND balance >=#{amount}-->
+    <!--        ORDER BY create_time-->
+    <!--    </select>-->
+
+    <!--    <update id="deductAdvancedAiModelSubscriptionBalance">-->
+    <!--        UPDATE t_user_ai_resource_detail-->
+    <!--        SET balance = balance - 1,-->
+    <!--            update_time = NOW()-->
+    <!--        WHERE  user_ai_resource_id=#{userAiResourceId}-->
+    <!--          AND type = 0-->
+    <!--          AND balance >= 1-->
+    <!--          AND expiry_time > NOW()-->
+    <!--        ORDER BY expiry_time-->
+    <!--        limit 1-->
+    <!--    </update>-->
+
+    <!--    <update id="deductAdvancedAiModelPurchasedBalance">-->
+    <!--        UPDATE t_user_ai_resource_detail-->
+    <!--        SET balance = balance - 1,-->
+    <!--            update_time = NOW()-->
+    <!--        WHERE user_ai_resource_id=#{userAiResourceId}-->
+    <!--          AND type = 1-->
+    <!--          AND balance >= 1-->
+    <!--        ORDER BY create_time-->
+    <!--        limit 1-->
+    <!--    </update>-->
+    <select id="selectAndLockSubscriptionDetailIdByUserAiResourceIdAndValue" resultType="java.lang.Long">
+        SELECT user_ai_resource_detail_id
+        FROM t_user_ai_resource_detail
+        WHERE user_ai_resource_id = #{userAiResourceId}
+          AND type = 0
+          AND balance >= #{value}
+          AND expiry_time > NOW()
+        ORDER BY expiry_time LIMIT 1
+        FOR
+        UPDATE
+    </select>
+
+    <!-- 锁定并查询购买资源 -->
+    <select id="selectAndLockPurchasedDetailIdByUserAiResourceIdAndValue" resultType="java.lang.Long">
+        SELECT user_ai_resource_detail_id
+        FROM t_user_ai_resource_detail
+        WHERE user_ai_resource_id = #{userAiResourceId}
+          AND type = 1
+          AND balance >= #{value}
+        ORDER BY create_time LIMIT 1
+        FOR
+        UPDATE
+    </select>
+
+    <!-- 根据详情ID扣减余额 -->
+    <update id="deductBalanceByUserAiResourceDetailId">
+        UPDATE t_user_ai_resource_detail
+        SET balance = balance - #{value}
+        WHERE user_ai_resource_detail_id = #{userAiResourceDetailId}
+    </update>
+
+    <!-- 查询未过期的订阅总余额 -->
+    <select id="SelectSubscriptionBalanceByUserAiResourceId" parameterType="java.lang.Long"
+            resultType="java.lang.Integer">
+        SELECT SUM(balance)
+        FROM t_user_ai_resource_detail
+        WHERE user_ai_resource_id = #{userAiResourceId}
+          AND type = 0
+          AND expiry_time > NOW()
+          AND balance > 0
+    </select>
+
+
+    <select id="SelectRechargeBalanceByUserAiResourceId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT SUM(balance)
+        FROM t_user_ai_resource_detail
+        WHERE user_ai_resource_id = #{userAiResourceId}
+          AND type = 1
+          AND balance > 0
+    </select>
+
+    <!-- 批量插入用户AI资源详情 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO t_user_ai_resource_detail (
+        user_ai_resource_id,
+        balance,
+        type,
+        expiry_time,
+        create_time,
+        update_time
+        ) VALUES
+        <foreach collection="details" item="detail" separator=",">
+            (
+            #{detail.userAiResourceId},
+            #{detail.balance},
+            #{detail.type},
+            #{detail.expiryTime},
+            NOW(),
+            NOW()
+            )
+        </foreach>
+    </insert>
+</mapper>
